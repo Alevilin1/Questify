@@ -1,7 +1,6 @@
 import 'Modelos/tarefas.dart';
 import 'package:flutter/material.dart';
 
-
 class CriarTarefa extends StatefulWidget {
   List<Tarefas> listaDeTarefas;
   CriarTarefa({required this.listaDeTarefas});
@@ -73,23 +72,23 @@ class CriarTarefaState extends State<CriarTarefa> {
                   );
 
                   // Salvando a tarefa no Firestore
-                  await novaTarefa.salvar("teste_uid"); 
+                  await novaTarefa.salvar("teste_uid");
 
                   setState(() {
-                    widget.listaDeTarefas.add(novaTarefa); //Adicionando a tarefa na lista
+                    widget.listaDeTarefas
+                        .add(novaTarefa); //Adicionando a tarefa na lista
                   });
 
                   //Depois de criar a tarefa, volta para a pagina principal
                   Navigator.pop(context, widget.listaDeTarefas);
 
                   //Debug
-                  
+
                   print(descricaoControler.text);
                   print(tituloControler.text);
                   print(_dificuldadeSelecionada);
                 },
-                child: Text("Adicionar")
-            )
+                child: Text("Adicionar"))
           ],
         ),
       ),

@@ -2,13 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/barrausuario.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:flutter_quesfity/firebase_options.dart';
 import 'Modelos/tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'criartarefas.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(const Main());
 }
 
@@ -59,7 +62,7 @@ class HomeState extends State<Home> {
     setState(() {
       listaDeTarefas = snapshot.docs.map((doc) {
         return Tarefas(
-          id: doc.id, //Pegando o id da tarefa 
+          id: doc.id, //Pegando o id da tarefa
           titulo: doc['titulo'],
           descricao: doc['descricao'],
           dificuldade: doc['dificuldade'],
@@ -84,6 +87,10 @@ class HomeState extends State<Home> {
   }
 
   void concluirTarefa(Tarefas tarefa) async {
+
+    //Depois de concluir uma tarefa, ela é deletada do banco de dadoss
+    await tarefa.deletarTarefa(user.id, tarefa);
+
     setState(() {
       //Removendo a tarefa
       tarefa.tarefaConcluida = true;
@@ -112,11 +119,7 @@ class HomeState extends State<Home> {
       user.salvar();
     });
 
-    
-    //Depois de concluir uma tarefa, ela é deletada do banco de dadoss
-    await tarefa.deletarTarefa(user.id, tarefa);
-    
-    
+
   }
 
   @override
@@ -143,7 +146,8 @@ class HomeState extends State<Home> {
                           onChanged: (value) {
                             concluirTarefa(tarefa);
                           }),
-                      Text(tarefa.titulo), Text(tarefa.id)
+                      Text(tarefa.titulo),
+                      Text(tarefa.id)
                     ],
                   )),
                 );
