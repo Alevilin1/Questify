@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "179719611016",
+    "project_id": "questifybanco",
+    "storage_bucket": "questifybanco.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179719611016:android:4cafd7c85a15704ee0353d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_quesfity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqIgp1cyS8G9JfLLUcmMAf1FWkCLiD-20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
