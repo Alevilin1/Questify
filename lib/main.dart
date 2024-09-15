@@ -2,16 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/barrausuario.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:flutter_quesfity/componentelista.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'Modelos/tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'criartarefas.dart';
+import 'criar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const Main());
 }
 
@@ -23,8 +22,8 @@ class Main extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
             brightness: Brightness.dark,
-            primaryColorDark: const Color(0xFF1D1B1B),
-            secondaryHeaderColor: const Color(0xFF322F35)),
+            primaryColorDark: const Color(0xFF3C3C3C),
+            secondaryHeaderColor: const Color(0xFF222222)),
         home: const Home());
   }
 }
@@ -65,8 +64,8 @@ class HomeState extends State<Home> {
           id: doc.id, //Pegando o id da tarefa
           titulo: doc['titulo'],
           descricao: doc['descricao'],
-          dificuldade: doc['dificuldade'],
           tarefaConcluida: doc['tarefaConcluida'],
+          xp: doc['xp'],
         );
       }).toList();
     });
@@ -83,27 +82,22 @@ class HomeState extends State<Home> {
           id: userId); // Cria um novo usuário se ele não existir no banco de dados
       await user.salvar();
     }
-    setState(() {});
+    setState(() {}); //Atualiza a interface
   }
 
   void concluirTarefa(Tarefas tarefa) async {
-
     //Depois de concluir uma tarefa, ela é deletada do banco de dadoss
     await tarefa.deletarTarefa(user.id, tarefa);
 
     setState(() {
       //Removendo a tarefa
       tarefa.tarefaConcluida = true;
+      
+      //Removendo da lista
       listaDeTarefas.remove(tarefa);
 
-      //Incrementando xp
-      if (tarefa.dificuldade == 1) {
-        user.xp += 10;
-      } else if (tarefa.dificuldade == 2) {
-        user.xp += 20;
-      } else if (tarefa.dificuldade == 3) {
-        user.xp += 30;
-      }
+      //Adicionando XP
+      user.xp += tarefa.xp;
 
       //Enquanto o meu xp for maior que o necessario para subir de nivel
       while (user.xp >= user.xpNivel()) {
@@ -118,61 +112,43 @@ class HomeState extends State<Home> {
       //Depois de concluir uma tarefa ou subir de nivel, precisa ser salvo o xp do usuario
       user.salvar();
     });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-          title: const Text("ARAS"),
-        ),
-        body: Column(
-          children: [
-            BarraUsuario(
-              user: user,
-            ),
-            Column(
-              children: listaDeTarefas.map((tarefa) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                      child: Row(
-                    children: [
-                      Checkbox(
-                          value: tarefa.tarefaConcluida,
-                          onChanged: (value) {
-                            concluirTarefa(tarefa);
-                          }),
-                      Text(tarefa.titulo),
-                      Text(tarefa.id)
-                    ],
-                  )),
+      appBar: AppBar(
+        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+        title: const Text("ARAS"),
+      ),
+      body: Column(
+        children: [
+          BarraUsuario(
+            user: user,
+          ),
+          ComponenteLista(
+              listaDeTarefas: listaDeTarefas, concluirTarefa: concluirTarefa),
+          FloatingActionButton(
+              // botao para criar tarefas
+              child: const Icon(Icons.add),
+              heroTag: "CriarTarefa",
+              onPressed: () async {
+                // Espera o resultado da pagina criartarefas
+                final resultado = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CriarTarefa(
+                            listaDeTarefas: List.from(listaDeTarefas),
+                          )),
                 );
-              }).toList(),
-            ),
-            FloatingActionButton(
-                child: const Icon(Icons.add),
-                heroTag: "CriarTarefa",
-                onPressed: () async {
-                  // Espera o resultado da pagina criartarefas
-                  final resultado = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CriarTarefa(
-                              listaDeTarefas: List.from(listaDeTarefas),
-                            )),
-                  );
-
-                  if (resultado != null) {
-                    setState(() {
-                      listaDeTarefas = resultado;
-                    });
-                  }
-                })
-          ],
-        ));
+                if (resultado != null) {
+                  setState(() {
+                    listaDeTarefas = resultado;
+                  });
+                }
+              })
+        ],
+      ),
+    );
   }
 }
