@@ -1,3 +1,4 @@
+import 'package:flutter_quesfity/Componentes/atributos.dart';
 import 'package:flutter_quesfity/Componentes/dificuldade.dart';
 import 'package:flutter_quesfity/Componentes/importancia.dart';
 import 'package:flutter_quesfity/Componentes/titulo.dart';
@@ -20,6 +21,8 @@ class CriarTarefaState extends State<CriarTarefa> {
   TextEditingController descricaoControler = TextEditingController();
   double xpDificuldadeTarefa = 0;
   double xpImportanciaTarefa = 0;
+  double xpAtributos = 0;
+  List<bool> atributosSelecionados = [false, false, false];
 
   void updateXpDificuldade(double value) {
     setState(() {
@@ -33,8 +36,15 @@ class CriarTarefaState extends State<CriarTarefa> {
     });
   }
 
-  double XpCriacaoTarefa() {
-    return xpDificuldadeTarefa + xpImportanciaTarefa; //Retorna o xp da tarefa calculado
+  double xpCriacaoTarefa() {
+    return xpDificuldadeTarefa +
+        xpImportanciaTarefa; //Retorna o xp da tarefa calculado
+  }
+
+  void updateAtributos(List<bool> atributos) {
+    setState(() {
+      atributosSelecionados = atributos;
+    });
   }
 
   @override
@@ -53,7 +63,6 @@ class CriarTarefaState extends State<CriarTarefa> {
               decoration: BoxDecoration(
                   color: Theme.of(context).secondaryHeaderColor,
                   borderRadius: BorderRadius.circular(15)),
-              height: 220,
               child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Titulo(
@@ -69,7 +78,7 @@ class CriarTarefaState extends State<CriarTarefa> {
                   decoration: BoxDecoration(
                       color: Theme.of(context).secondaryHeaderColor,
                       borderRadius: BorderRadius.circular(15)),
-                  height: 220,
+                  //height: 300,
                   child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: Column(
@@ -86,7 +95,7 @@ class CriarTarefaState extends State<CriarTarefa> {
                                   ),
                                 ),
                                 Text(
-                                  "+${XpCriacaoTarefa()}XP",
+                                  "+${xpCriacaoTarefa()}XP",
                                   style: const TextStyle(
                                       fontSize: 15, color: Colors.orange),
                                 )
@@ -110,6 +119,12 @@ class CriarTarefaState extends State<CriarTarefa> {
                                     ),
                                     EscolherImportancia(
                                         onXPChanged: updateXpImportancia),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Atributos(
+                                      escolhaAtributos: updateAtributos,
+                                    )
                                   ],
                                 ))
                           ]))),
@@ -117,12 +132,13 @@ class CriarTarefaState extends State<CriarTarefa> {
             ElevatedButton(
                 onPressed: () async {
                   Tarefas novaTarefa = Tarefas(
-                    //Criando uma nova tarefa
-                    titulo: tituloControler.text, //Pegando os dados do titulo
-                    descricao:
-                        descricaoControler.text, //Pegando os dados da descricão
-                    xp: XpCriacaoTarefa(), //Pegando o xp da tarefa
-                  );
+                      //Criando uma nova tarefa
+                      titulo: tituloControler.text, //Pegando os dados do titulo
+                      descricao: descricaoControler
+                          .text, //Pegando os dados da descricão
+                      xp: xpCriacaoTarefa(),
+                      atributos: atributosSelecionados //Pegando o xp da tarefa
+                      );
 
                   // Salvando a tarefa no Firestore
                   await novaTarefa.salvar("teste_uid");
@@ -135,13 +151,11 @@ class CriarTarefaState extends State<CriarTarefa> {
                   //Depois de criar a tarefa, volta para a pagina principal
                   Navigator.pop(context, widget.listaDeTarefas);
 
-                 
-
+                  print(atributosSelecionados);
                   print(descricaoControler.text); //Debug
                   print(tituloControler.text); //Debug
-                  
                 },
-                child: Text("Adicionar"))
+                child: const Text("Adicionar"))
           ],
         ),
       ),

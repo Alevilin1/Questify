@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class EscolherImportancia extends StatefulWidget {
   final Function(double) onXPChanged; //Funcão que receberá o valor do slide
 
-  EscolherImportancia ({required this.onXPChanged});
+  EscolherImportancia({required this.onXPChanged});
   @override
   State<StatefulWidget> createState() {
     return EscolherImportanciaState();
@@ -17,20 +17,26 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
   double valorAnterior = 0; //Valor anterior do slide
 
   void updateXpDificuldade(double value) {
-    setState(() {
-      if (value > valorAnterior) {
-        //Se o valor for maior que o valor anterior
-        xpImportanciaTarefa += 10; //Aumentando o xp da tarefa
-      } else if (value < valorAnterior) {
-        //Se o valor for menor que o valor anterior
-        xpImportanciaTarefa -= 10; //Diminuindo o xp da tarefa
-      }
+    if (value != valorAnterior) {
+      setState(() {
+        if (value > valorAnterior) {
+          //Se o valor for maior que o valor anterior
+          xpImportanciaTarefa += 10; //Aumentando o xp da tarefa
+        } else if (value < valorAnterior) {
+          //Se o valor for menor que o valor anterior
+          xpImportanciaTarefa -= 10; //Diminuindo o xp da tarefa
+        }
 
-      widget.onXPChanged(xpImportanciaTarefa); //Setando o xp da tarefa
-    });
+        if (xpImportanciaTarefa < 0) {
+          xpImportanciaTarefa = 0;
+        }
 
-    valorAnterior = value; //Setando o valor anterior
-    valorSlide = value; //Setando o valor do slide
+        widget.onXPChanged(xpImportanciaTarefa); //Setando o xp da tarefa
+      });
+
+      valorAnterior = value; //Setando o valor anterior
+      valorSlide = value; //Setando o valor do slide
+    }
   }
 
   @override

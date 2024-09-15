@@ -9,8 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'criar.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  WidgetsFlutterBinding.ensureInitialized(); 
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // Inicializando o firebase
   runApp(const Main());
 }
 
@@ -58,14 +58,17 @@ class HomeState extends State<Home> {
         .collection('tarefas')
         .get();
 
-    setState(() {
+    setState(() {  
       listaDeTarefas = snapshot.docs.map((doc) {
+        List<dynamic> atributosList = doc['atributos']; //Pegando os atributos da tarefa e transformando em uma lista de dynamic
+        List<bool> atributos = atributosList.map((e) => e as bool).toList(); //Pegando os atributos da tarefa e transformando em uma lista de bool
         return Tarefas(
           id: doc.id, //Pegando o id da tarefa
           titulo: doc['titulo'],
           descricao: doc['descricao'],
           tarefaConcluida: doc['tarefaConcluida'],
           xp: doc['xp'],
+          atributos: atributos, //Pegando os atributos da tarefa
         );
       }).toList();
     });
@@ -92,21 +95,34 @@ class HomeState extends State<Home> {
     setState(() {
       //Removendo a tarefa
       tarefa.tarefaConcluida = true;
-      
+
       //Removendo da lista
       listaDeTarefas.remove(tarefa);
 
       //Adicionando XP
       user.xp += tarefa.xp;
 
+      if (tarefa.atributos[0] == true) {
+        user.xpAtributos['forca'] += tarefa.xp / 2;
+      }
+
+      if (tarefa.atributos[1] == true) {
+        user.xpAtributos['inteligencia'] += tarefa.xp / 2;
+      }
+
+      if (tarefa.atributos[2] == true) {
+        user.xpAtributos['destreza'] += tarefa.xp / 2;
+      }
+
       //Enquanto o meu xp for maior que o necessario para subir de nivel
       while (user.xp >= user.xpNivel()) {
         user.xp -= user.xpNivel();
         user.nivel++;
 
-        //Debug
+        /*Debug
         print("Seu nivel é ${user.nivel}");
         print("Seu XP é ${user.xp}");
+        */
       }
 
       //Depois de concluir uma tarefa ou subir de nivel, precisa ser salvo o xp do usuario

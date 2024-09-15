@@ -5,8 +5,27 @@ class User {
   double xp;
   int nivel;
 
-  User({required this.id, this.xp = 0, this.nivel = 1});
+  Map<String, dynamic> xpAtributos = {}; // xp dos atributos
+  Map<String, dynamic> nivelAtributos = {}; // nivel dos atributos
 
+  User({
+    required this.id,
+    this.xp = 0,
+    this.nivel = 1,
+    Map<String, dynamic>? xpAtributos,
+    Map<String, dynamic>? nivelAtributos,
+  })  : xpAtributos = xpAtributos ?? // Inicializando os valores do xp
+            {
+              'forca': 0,
+              'inteligencia': 0,
+              'destreza': 0,
+            },
+        nivelAtributos = nivelAtributos ?? // Inicializando os valores do nivel
+            {
+              'forca': 1,
+              'inteligencia': 1,
+              'destreza': 1,
+            };
 
   //Salvando os dados do usuario
   Future<void> salvar() async {
@@ -14,6 +33,8 @@ class User {
     await firestore.collection('users').doc(id).set({
       'xp': xp,
       'nivel': nivel,
+      'xpAtributos': xpAtributos,
+      'nivelAtributos': nivelAtributos
     });
   }
 
@@ -29,11 +50,12 @@ class User {
         id: userId,
         xp: data?['xp'] ?? 0,
         nivel: data?['nivel'] ?? 1,
+        xpAtributos: data?['xpAtributos'] ?? {},
+        nivelAtributos: data?['nivelAtributos'] ?? {},
       );
     }
     return null;
   }
-
 
   int xpNivel() {
     //Se o nivel for dois, então o xp necessario para o proximo nivel, vai ser 200
@@ -46,3 +68,5 @@ class User {
         xpNivel(); //Exemplo: xp: 20, xpnivel = 200, 20/200 = 0,1. 0,1 é 10% na barra de progresso
   }
 }
+
+

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class EscolherDificuldade extends StatefulWidget {
   final Function(double) onXPChanged; //Funcão que receberá o valor do slide
 
-  EscolherDificuldade({required this.onXPChanged});
+  const EscolherDificuldade({super.key, required this.onXPChanged});
   @override
   State<StatefulWidget> createState() {
     return EscolherDificuldadeState();
@@ -17,20 +17,26 @@ class EscolherDificuldadeState extends State<EscolherDificuldade> {
   double valorAnterior = 0; //Valor anterior do slide
 
   void updateXpDificuldade(double value) {
-    setState(() {
-      if (value > valorAnterior) {
-        //Se o valor for maior que o valor anterior
-        xpDificuldadeTarefa += 10; //Aumentando o xp da tarefa
-      } else if (value < valorAnterior) {
-        //Se o valor for menor que o valor anterior
-        xpDificuldadeTarefa -= 10; //Diminuindo o xp da tarefa
-      }
+    if (value != valorAnterior) {
+      setState(() {
+        if (value > valorAnterior) {
+          //Se o valor for maior que o valor anterior
+          xpDificuldadeTarefa += 10; //Aumentando o xp da tarefa
+        } else if (value < valorAnterior) {
+          //Se o valor for menor que o valor anterior
+          xpDificuldadeTarefa -= 10; //Diminuindo o xp da tarefa
+        }
 
-      widget.onXPChanged(xpDificuldadeTarefa); //Setando o xp da tarefa
-    });
+        if (xpDificuldadeTarefa < 0) {
+          xpDificuldadeTarefa = 0;
+        }
 
-    valorAnterior = value; //Setando o valor anterior
-    valorSlide = value; //Setando o valor do slide
+        widget.onXPChanged(xpDificuldadeTarefa); //Setando o xp da tarefa
+      });
+
+      valorAnterior = value; //Setando o valor anterior
+      valorSlide = value; //Setando o valor do slide
+    }
   }
 
   @override
@@ -39,8 +45,8 @@ class EscolherDificuldadeState extends State<EscolherDificuldade> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: const EdgeInsets.only(left: 12), //Padding para o texto
-          child: const Text(
+          padding: EdgeInsets.only(left: 12), //Padding para o texto
+          child:  Text(
             "Dificuldade",
             style: TextStyle(fontSize: 15),
           ),
@@ -59,9 +65,10 @@ class EscolherDificuldadeState extends State<EscolherDificuldade> {
               setState(() {
                 updateXpDificuldade(value); //Atualiza o xp da tarefa
 
-                //Debug
+                /*Debug
                 print(xpDificuldadeTarefa.toString());
                 print("O valor atual é: ${valorSlide.toString()}");
+                */
               });
             }),
       ],

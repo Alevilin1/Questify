@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class Titulo extends StatelessWidget {
   InputDecoration inputDecoration;
   InputDecoration inputDecoration1;
@@ -42,10 +43,15 @@ class Titulo extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: TextFormField(
+            maxLines: null,
+            expands: false,
             controller: descricaoControler,
             decoration: inputDecoration1,
           ),
         ),
+        const SizedBox(
+          height: 15,
+        )
       ],
     );
   }
