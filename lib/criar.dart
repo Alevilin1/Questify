@@ -1,13 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/atributos.dart';
 import 'package:flutter_quesfity/Componentes/dificuldade.dart';
 import 'package:flutter_quesfity/Componentes/importancia.dart';
 import 'package:flutter_quesfity/Componentes/titulo.dart';
 import 'Modelos/tarefas.dart';
-import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CriarTarefa extends StatefulWidget {
   List<Tarefas> listaDeTarefas;
+
   CriarTarefa({required this.listaDeTarefas});
 
   @override
@@ -26,24 +27,23 @@ class CriarTarefaState extends State<CriarTarefa> {
 
   void updateXpDificuldade(double value) {
     setState(() {
-      xpDificuldadeTarefa = value; //Setando o xp da tarefa
+      xpDificuldadeTarefa = value; // Atualiza o XP da dificuldade
     });
   }
 
   void updateXpImportancia(double value) {
     setState(() {
-      xpImportanciaTarefa = value;
+      xpImportanciaTarefa = value; // Atualiza o XP da importância
     });
   }
 
   double xpCriacaoTarefa() {
-    return xpDificuldadeTarefa +
-        xpImportanciaTarefa; //Retorna o xp da tarefa calculado
+    return xpDificuldadeTarefa + xpImportanciaTarefa; // Retorna o XP total
   }
 
   void updateAtributos(List<bool> atributos) {
     setState(() {
-      atributosSelecionados = atributos;
+      atributosSelecionados = atributos; // Atualiza atributos selecionados
     });
   }
 
@@ -61,101 +61,96 @@ class CriarTarefaState extends State<CriarTarefa> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).secondaryHeaderColor,
-                  borderRadius: BorderRadius.circular(15)),
+                color: Theme.of(context).secondaryHeaderColor,
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Titulo(
-                    tituloControler: tituloControler,
-                    inputDecoration: _inputDecoration("Tarefas"),
-                    inputDecoration1: _inputDecoration("Descrição"),
-                    descricaoControler: descricaoControler,
-                  )),
+                padding: const EdgeInsets.all(10),
+                child: Titulo(
+                  tituloControler: tituloControler,
+                  inputDecoration: _inputDecoration("Tarefas"),
+                  inputDecoration1: _inputDecoration("Descrição"),
+                  descricaoControler: descricaoControler,
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).secondaryHeaderColor,
-                      borderRadius: BorderRadius.circular(15)),
-                  //height: 300,
-                  child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Text(
+                              "Avançado",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                          Text(
+                            "+${xpCriacaoTarefa()}XP",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.orange,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: Text(
-                                    "Avançado",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                                Text(
-                                  "+${xpCriacaoTarefa()}XP",
-                                  style: const TextStyle(
-                                      fontSize: 15, color: Colors.orange),
-                                )
-                              ],
+                            EscolherDificuldade(
+                              onXPChanged: updateXpDificuldade,
                             ),
-                            const SizedBox(
-                              height: 10,
+                            const SizedBox(height: 10),
+                            EscolherImportancia(
+                              onXPChanged: updateXpImportancia,
                             ),
-                            Padding(
-                                //Slider para escolher a dificuldade
-                                padding: const EdgeInsets.only(),
-                                child: Column(
-                                  //Coluna para os sliders
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    EscolherDificuldade(
-                                      onXPChanged: updateXpDificuldade,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    EscolherImportancia(
-                                        onXPChanged: updateXpImportancia),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Atributos(
-                                      escolhaAtributos: updateAtributos,
-                                    )
-                                  ],
-                                ))
-                          ]))),
+                            const SizedBox(height: 10),
+                            Atributos(
+                              escolhaAtributos: updateAtributos,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
             ElevatedButton(
-                onPressed: () async {
-                  Tarefas novaTarefa = Tarefas(
-                      //Criando uma nova tarefa
-                      titulo: tituloControler.text, //Pegando os dados do titulo
-                      descricao: descricaoControler
-                          .text, //Pegando os dados da descricão
-                      xp: xpCriacaoTarefa(),
-                      atributos: atributosSelecionados //Pegando o xp da tarefa
-                      );
+              onPressed: () async {
+                Tarefas novaTarefa = Tarefas(
+                  titulo: tituloControler.text,
+                  descricao: descricaoControler.text,
+                  xp: xpCriacaoTarefa(),
+                  atributos: atributosSelecionados,
+                );
 
-                  // Salvando a tarefa no Firestore
-                  await novaTarefa.salvar("teste_uid");
+                // Salvando a tarefa no Firestore
+                await novaTarefa.salvar("teste_uid");
 
-                  setState(() {
-                    widget.listaDeTarefas
-                        .add(novaTarefa); //Adicionando a tarefa na lista
-                  });
+                setState(() {
+                  widget.listaDeTarefas.add(novaTarefa);
+                });
 
-                  //Depois de criar a tarefa, volta para a pagina principal
-                  Navigator.pop(context, widget.listaDeTarefas);
-
-                  print(atributosSelecionados);
-                  print(descricaoControler.text); //Debug
-                  print(tituloControler.text); //Debug
-                },
-                child: const Text("Adicionar"))
+                // Depois de criar a tarefa, volta para a página principal
+                Navigator.pop(context, widget.listaDeTarefas);
+              },
+              child: const Text("Adicionar"),
+            ),
           ],
         ),
       ),
@@ -164,11 +159,12 @@ class CriarTarefaState extends State<CriarTarefa> {
 }
 
 InputDecoration _inputDecoration(String nome) {
-  //Funcionalidade para deixar o input mais bonito
   return InputDecoration(
-      border: const OutlineInputBorder(),
-      labelText: nome,
-      floatingLabelStyle: const TextStyle(color: Colors.blue),
-      focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue, width: 2.0)));
+    border: const OutlineInputBorder(),
+    labelText: nome,
+    floatingLabelStyle: const TextStyle(color: Colors.blue),
+    focusedBorder: const OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.blue, width: 2.0),
+    ),
+  );
 }

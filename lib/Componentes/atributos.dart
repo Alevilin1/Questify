@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quesfity/Componentes/info_atributos.dart';
 
 class Atributos extends StatefulWidget {
   final Function(List<bool>) escolhaAtributos;
@@ -23,9 +24,37 @@ class AtributosState extends State<Atributos> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(12),
-          child: Text('Atributos'),
+        Padding(
+          padding: EdgeInsets.only(left: 12, top: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Atributos',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 24, // Ajusta o tamanho do Container para o ícone
+                width: 24, // Ajusta a largura
+                child: IconButton(
+                  icon: Icon(Icons.info_outline,
+                      size: 24), // Define o tamanho do ícone
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Atributos'),
+                            content: InfoAtributos(),                           
+                          );
+                        });
+                  },
+                  padding: EdgeInsets.zero, // Remove o padding
+                  constraints: BoxConstraints(), // Remove o espaçamento padrão
+                ),
+              )
+            ],
+          ),
         ),
         Row(
           children: [
@@ -55,7 +84,7 @@ class AtributosState extends State<Atributos> {
                             child: Image.asset('lib/Icones/forca.png'),
                           ),
                         ),
-                       const Text("FOR")
+                        const Text("FOR")
                       ],
                     ),
                   ),

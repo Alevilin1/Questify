@@ -68,5 +68,3 @@ class User {
         xpNivel(); //Exemplo: xp: 20, xpnivel = 200, 20/200 = 0,1. 0,1 é 10% na barra de progresso
   }
 }
-
-
