@@ -22,71 +22,32 @@ class ComponenteListaState extends State<ComponenteLista> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        floatingActionButton: FloatingActionButton(
-            elevation: 5,
-            shape: const CircleBorder(),
-            backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.add,
-              color: Colors.black,
-            ),
-            onPressed: () async {
-              final resultado = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CriarTarefa(
-                          listaDeTarefas: List.from(widget.listaDeTarefas),
-                        )),
-              );
-              if (resultado != null) {
-                setState(() {
-                  widget.listaDeTarefas = resultado;
-                });
-              }
-            }),
-        body: ListView.builder(
-          itemCount: widget.listaDeTarefas.length, //Quantidade de tarefas
-          itemBuilder: (context, index) {
-            Tarefas tarefa = widget.listaDeTarefas[index]; //Recebe a tarefa
+        body: ListView(
+          children: widget.listaDeTarefas.map((Tarefa) {
             return Card(
-              child: ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      tarefa.titulo,
-                      style: const TextStyle(fontFamily: 'PlusJakartaSans'),
-                    ),
-                  ],
-                ),
-                trailing: Text(
-                  "${tarefa.xp.toString()} XP",
-                  style: const TextStyle(
-                      fontFamily: 'PlusJakartaSans', fontSize: 13, color: Colors.white),
-                ),
-                subtitle: tarefa.descricao.isNotEmpty
+              child: CheckboxListTile(
+                title: Text(Tarefa.titulo),
+                subtitle: Tarefa.descricao != ""
                     ? Text(
-                        tarefa.descricao,
+                        Tarefa.descricao,
                         maxLines: 1,
                       )
                     : null,
-                leading: Checkbox(
-                  activeColor: Colors.green,
-                  value: tarefa
-                      .tarefaConcluida, //Verifica se a tarefa foi concluída
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        tarefa.tarefaConcluida = value;
-
-                        widget.concluirTarefa(tarefa);
-                      });
-                    }
-                  },
-                ),
-              ),
-            );
-          },
+                secondary: Text("${Tarefa.xp} XP", style: TextStyle(fontSize: 13),),
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: Colors.green,
+                value: Tarefa
+                    .tarefaConcluida, //Verifica se a tarefa foi concluída
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      Tarefa.tarefaConcluida = value;
+                      widget.concluirTarefa(Tarefa);
+                    });
+                  }
+                },
+            ));
+          }).toList(),
         ));
   }
 }
@@ -429,6 +390,86 @@ Checkbox(
         },
       ),
     );
+  }
+}
+
+*/
+
+
+
+/* Antigo
+
+  class ComponenteListaState extends State<ComponenteLista> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.black,
+        floatingActionButton: FloatingActionButton(
+            elevation: 5,
+            shape: const CircleBorder(),
+            backgroundColor: Colors.white,
+            child: const Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
+            onPressed: () async {
+              final resultado = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CriarTarefa(
+                          listaDeTarefas: List.from(widget.listaDeTarefas),
+                        )),
+              );
+              if (resultado != null) {
+                setState(() {
+                  widget.listaDeTarefas = resultado;
+                });
+              }
+            }),
+        body: ListView.builder(
+          itemCount: widget.listaDeTarefas.length, //Quantidade de tarefas
+          itemBuilder: (context, index) {
+            Tarefas tarefa = widget.listaDeTarefas[index]; //Recebe a tarefa
+            return Card(
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      tarefa.titulo,
+                      style: const TextStyle(fontFamily: 'PlusJakartaSans'),
+                    ),
+                  ],
+                ),
+                trailing: Text(
+                  "${tarefa.xp.toString()} XP",
+                  style: const TextStyle(
+                      fontFamily: 'PlusJakartaSans', fontSize: 13, color: Colors.white),
+                ),
+                subtitle: tarefa.descricao.isNotEmpty
+                    ? Text(
+                        tarefa.descricao,
+                        maxLines: 1,
+                      )
+                    : null,
+                leading: Checkbox(
+                  activeColor: Colors.green,
+                  value: tarefa
+                      .tarefaConcluida, //Verifica se a tarefa foi concluída
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        tarefa.tarefaConcluida = value;
+
+                        widget.concluirTarefa(tarefa);
+                      });
+                    }
+                  },
+                ),
+              ),
+            );
+          },
+        ));
   }
 }
 

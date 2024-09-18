@@ -5,7 +5,7 @@ import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/ListaTarefa.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:intl/intl.dart';
-import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
+import 'CriarTarefa.dart';
 import 'Modelos/tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -106,7 +106,7 @@ class HomeState extends State<Home> {
     //Depois de concluir uma tarefa, ela é deletada do banco de dadoss
     await tarefa.deletarTarefa(user.id, tarefa);
 
-    await _carregarTarefas();
+    //await _carregarTarefas();
 
     setState(() {
       //Removendo a tarefa
@@ -191,7 +191,7 @@ class HomeState extends State<Home> {
                       label: Text('Todos',
                           style: TextStyle(fontFamily: 'PlusJakartaSans')),
                       onSelected: null),
-                  SizedBox(
+                  const SizedBox(
                     width: 8,
                   ),
                   FilterChip(
@@ -225,7 +225,7 @@ class HomeState extends State<Home> {
                       onSelected: null),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24,
               ),
               Expanded(
@@ -233,23 +233,48 @@ class HomeState extends State<Home> {
                     listaDeTarefas: listaDeTarefas,
                     concluirTarefa: concluirTarefa),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                      elevation: 5,
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.white,
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
+                      onPressed: () async {
+                        final resultado = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CriarTarefa(
+                                    listaDeTarefas: List.from(listaDeTarefas),
+                                  )),
+                        );
+                        if (resultado != null) {
+                          setState(() {
+                            listaDeTarefas = resultado;
+                          });
+                        }
+                      }),
+                ],
+              ),
               const Divider(),
-              NavigationBar(
-                backgroundColor: Colors.black,
-                destinations: const [
-                  NavigationDestination(
-                    icon: Icon(Icons.task),
-                    label: 'Tarefas',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.trending_up_rounded),
-                    label: 'Status',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.person),
-                    label: 'Perfil',
-                  ),
-                ])
+              NavigationBar(backgroundColor: Colors.black, destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.task),
+                  label: 'Tarefas',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.trending_up_rounded),
+                  label: 'Status',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.person),
+                  label: 'Perfil',
+                ),
+              ])
             ],
           ),
         ));
