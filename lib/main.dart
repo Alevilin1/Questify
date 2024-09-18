@@ -2,7 +2,7 @@ import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
-import 'package:flutter_quesfity/ListaTarefas.dart';
+import 'package:flutter_quesfity/ListaTarefa.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:intl/intl.dart';
 import 'Modelos/tarefas.dart';
