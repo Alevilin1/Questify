@@ -34,6 +34,12 @@ class Titulo extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: TextFormField(
             controller: tituloControler,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor, insira um título';
+              }
+              return null;
+            },
             decoration: inputDecoration,
           ),
         ),

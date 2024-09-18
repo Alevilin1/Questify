@@ -5,9 +5,9 @@ import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/ListaTarefa.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:intl/intl.dart';
+import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
 import 'Modelos/tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,9 +41,17 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  int _selectedIndex = 0;
   bool? confirmacaoTarefa = false;
   User user = User(id: "");
   List<Tarefas> listaDeTarefas = [];
+
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+      // Aqui você pode adicionar lógica para navegação entre páginas.
+    });
+  }
 
   @override
   void initState() {
@@ -98,6 +106,8 @@ class HomeState extends State<Home> {
     //Depois de concluir uma tarefa, ela é deletada do banco de dadoss
     await tarefa.deletarTarefa(user.id, tarefa);
 
+    await _carregarTarefas();
+
     setState(() {
       //Removendo a tarefa
       tarefa.tarefaConcluida = true;
@@ -143,7 +153,8 @@ class HomeState extends State<Home> {
         appBar: AppBar(
           backgroundColor: Color(0xFF000000),
           leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-          title: const Text("Todos", style: TextStyle(fontFamily: 'PlusJakartaSans')),
+          title: const Text("Todos",
+              style: TextStyle(fontFamily: 'PlusJakartaSans')),
         ),
         body: Padding(
           padding: const EdgeInsets.all(12),
@@ -165,12 +176,10 @@ class HomeState extends State<Home> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  DateFormat.MMMMEEEEd().format(DateTime.now()),
-                  style: TextStyle(fontFamily: 'PlusJakartaSans')
-                ),
+                child: Text(DateFormat.MMMMEEEEd().format(DateTime.now()),
+                    style: TextStyle(fontFamily: 'PlusJakartaSans')),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24,
               ),
               Row(
@@ -179,7 +188,8 @@ class HomeState extends State<Home> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      label: Text('Todos', style: TextStyle(fontFamily: 'PlusJakartaSans')),
+                      label: Text('Todos',
+                          style: TextStyle(fontFamily: 'PlusJakartaSans')),
                       onSelected: null),
                   SizedBox(
                     width: 8,
@@ -188,7 +198,10 @@ class HomeState extends State<Home> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      label: Text('Pessoal', style: TextStyle(fontFamily: 'PlusJakartaSans'),),
+                      label: Text(
+                        'Pessoal',
+                        style: TextStyle(fontFamily: 'PlusJakartaSans'),
+                      ),
                       onSelected: null),
                   SizedBox(
                     width: 8,
@@ -197,7 +210,8 @@ class HomeState extends State<Home> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      label: Text('Trabalho', style: TextStyle(fontFamily: 'PlusJakartaSans')),
+                      label: Text('Trabalho',
+                          style: TextStyle(fontFamily: 'PlusJakartaSans')),
                       onSelected: null),
                   SizedBox(
                     width: 8,
@@ -206,7 +220,8 @@ class HomeState extends State<Home> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      label: Text('Estudo', style: TextStyle(fontFamily: 'PlusJakartaSans')),
+                      label: Text('Estudo',
+                          style: TextStyle(fontFamily: 'PlusJakartaSans')),
                       onSelected: null),
                 ],
               ),
@@ -215,8 +230,26 @@ class HomeState extends State<Home> {
               ),
               Expanded(
                 child: ComponenteLista(
-                    listaDeTarefas: listaDeTarefas, concluirTarefa: concluirTarefa),
-              ), 
+                    listaDeTarefas: listaDeTarefas,
+                    concluirTarefa: concluirTarefa),
+              ),
+              const Divider(),
+              NavigationBar(
+                backgroundColor: Colors.black,
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.task),
+                    label: 'Tarefas',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.trending_up_rounded),
+                    label: 'Status',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.person),
+                    label: 'Perfil',
+                  ),
+                ])
             ],
           ),
         ));

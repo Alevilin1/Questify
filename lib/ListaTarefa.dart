@@ -21,11 +21,15 @@ class ComponenteListaState extends State<ComponenteLista> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.black,
         floatingActionButton: FloatingActionButton(
-          elevation: 5,
-          shape: CircleBorder(),
-          backgroundColor: Colors.white,
-            child: const Icon(Icons.add, color: Colors.black,),
+            elevation: 5,
+            shape: const CircleBorder(),
+            backgroundColor: Colors.white,
+            child: const Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
             onPressed: () async {
               final resultado = await Navigator.push(
                 context,
@@ -44,27 +48,42 @@ class ComponenteListaState extends State<ComponenteLista> {
           itemCount: widget.listaDeTarefas.length, //Quantidade de tarefas
           itemBuilder: (context, index) {
             Tarefas tarefa = widget.listaDeTarefas[index]; //Recebe a tarefa
-            return Container(
-              child: CheckboxListTile(
-                title: Text(tarefa.titulo),
-                subtitle: tarefa.descricao != ""
+            return Card(
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      tarefa.titulo,
+                      style: const TextStyle(fontFamily: 'PlusJakartaSans'),
+                    ),
+                  ],
+                ),
+                trailing: Text(
+                  "${tarefa.xp.toString()} XP",
+                  style: const TextStyle(
+                      fontFamily: 'PlusJakartaSans', fontSize: 13, color: Colors.white),
+                ),
+                subtitle: tarefa.descricao.isNotEmpty
                     ? Text(
                         tarefa.descricao,
                         maxLines: 1,
                       )
                     : null,
-                activeColor: Colors.green,
-                value:
-                    tarefa.tarefaConcluida, //Verifica se a tarefa foi concluída
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      tarefa.tarefaConcluida = value;
+                leading: Checkbox(
+                  activeColor: Colors.green,
+                  value: tarefa
+                      .tarefaConcluida, //Verifica se a tarefa foi concluída
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        tarefa.tarefaConcluida = value;
 
-                      widget.concluirTarefa(tarefa);
-                    });
-                  }
-                },
+                        widget.concluirTarefa(tarefa);
+                      });
+                    }
+                  },
+                ),
               ),
             );
           },
