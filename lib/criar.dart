@@ -50,7 +50,7 @@ class CriarTarefaState extends State<CriarTarefa> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: const Text("Nova Tarefa"),
       ),

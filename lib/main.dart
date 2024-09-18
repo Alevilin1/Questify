@@ -1,16 +1,19 @@
+import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/barrausuario.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
-import 'package:flutter_quesfity/componentelista.dart';
+import 'package:flutter_quesfity/ListaTarefas.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
+import 'package:intl/intl.dart';
 import 'Modelos/tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'criar.dart';
+
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // Inicializando o firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options:
+          DefaultFirebaseOptions.currentPlatform); // Inicializando o firebase
   runApp(const Main());
 }
 
@@ -22,7 +25,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
             brightness: Brightness.dark,
-            primaryColorDark: const Color(0xFF3C3C3C),
+            primaryColor: const Color(0xFF121212),
             secondaryHeaderColor: const Color(0xFF222222)),
         home: const Home());
   }
@@ -58,10 +61,13 @@ class HomeState extends State<Home> {
         .collection('tarefas')
         .get();
 
-    setState(() {  
+    setState(() {
       listaDeTarefas = snapshot.docs.map((doc) {
-        List<dynamic> atributosList = doc['atributos']; //Pegando os atributos da tarefa e transformando em uma lista de dynamic
-        List<bool> atributos = atributosList.map((e) => e as bool).toList(); //Pegando os atributos da tarefa e transformando em uma lista de bool
+        List<dynamic> atributosList = doc[
+            'atributos']; //Pegando os atributos da tarefa e transformando em uma lista de dynamic
+        List<bool> atributos = atributosList
+            .map((e) => e as bool)
+            .toList(); //Pegando os atributos da tarefa e transformando em uma lista de bool
         return Tarefas(
           id: doc.id, //Pegando o id da tarefa
           titulo: doc['titulo'],
@@ -133,11 +139,94 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-        title: const Text("ARAS"),
-      ),
-      body: Column(
+        backgroundColor: Color(0xFF000000),
+        appBar: AppBar(
+          backgroundColor: Color(0xFF000000),
+          leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+          title: const Text("Todos", style: TextStyle(fontFamily: 'PlusJakartaSans')),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Seu nivel é: ${user.nivel}',
+                  style: TextStyle(fontSize: 15, fontFamily: 'PlusJakartaSans'),
+                ),
+              ),
+              LinearCappedProgressIndicator(
+                minHeight: 10,
+                color: Color(0xFFFFFFFF),
+                backgroundColor: Color(0xFFCCCCCC),
+                value: user.progressao(), //A barra de progressão vai de 0 a 1
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  DateFormat.MMMMEEEEd().format(DateTime.now()),
+                  style: TextStyle(fontFamily: 'PlusJakartaSans')
+                ),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Row(
+                children: [
+                  FilterChip(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      label: Text('Todos', style: TextStyle(fontFamily: 'PlusJakartaSans')),
+                      onSelected: null),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  FilterChip(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      label: Text('Pessoal', style: TextStyle(fontFamily: 'PlusJakartaSans'),),
+                      onSelected: null),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  FilterChip(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      label: Text('Trabalho', style: TextStyle(fontFamily: 'PlusJakartaSans')),
+                      onSelected: null),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  FilterChip(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      label: Text('Estudo', style: TextStyle(fontFamily: 'PlusJakartaSans')),
+                      onSelected: null),
+                ],
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Expanded(
+                child: ComponenteLista(
+                    listaDeTarefas: listaDeTarefas, concluirTarefa: concluirTarefa),
+              ), 
+            ],
+          ),
+        ));
+  }
+}
+
+
+/*
+
+Column(
         children: [
           BarraUsuario(
             user: user,
@@ -165,6 +254,56 @@ class HomeState extends State<Home> {
               })
         ],
       ),
-    );
+
+*/
+
+/*Antigo botao para criar tarefas
+
+class ComponenteListaState extends State<ComponenteLista> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              final resultado = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CriarTarefa(
+                          listaDeTarefas: List.from(widget.listaDeTarefas),
+                        )),
+              );
+            }),
+        body: ListView.builder(
+          itemCount: widget.listaDeTarefas.length, //Quantidade de tarefas
+          itemBuilder: (context, index) {
+            Tarefas tarefa = widget.listaDeTarefas[index]; //Recebe a tarefa
+            return Container(
+              child: CheckboxListTile(
+                title: Text(tarefa.titulo),
+                subtitle: tarefa.descricao != ""
+                    ? Text(
+                        tarefa.descricao,
+                        maxLines: 1,
+                      )
+                    : null,
+                activeColor: Colors.green,
+                value:
+                    tarefa.tarefaConcluida, //Verifica se a tarefa foi concluída
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      tarefa.tarefaConcluida = value;
+
+                      widget.concluirTarefa(tarefa);
+                    });
+                  }
+                },
+              ),
+            );
+          },
+        ));
   }
 }
+
+*/

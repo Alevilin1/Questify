@@ -54,7 +54,7 @@ class User {
         nivelAtributos: data?['nivelAtributos'] ?? {},
       );
     }
-    return null;
+    return null; // Caso o usuário não exista
   }
 
   int xpNivel() {

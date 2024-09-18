@@ -17,14 +17,15 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
   double valorAnterior = 0; //Valor anterior do slide
 
   void updateXpDificuldade(double value) {
-    if (value != valorAnterior) {
       setState(() {
-        if (value > valorAnterior) {
-          //Se o valor for maior que o valor anterior
-          xpImportanciaTarefa += 10; //Aumentando o xp da tarefa
-        } else if (value < valorAnterior) {
-          //Se o valor for menor que o valor anterior
-          xpImportanciaTarefa -= 10; //Diminuindo o xp da tarefa
+        if (value == 0) {
+          xpImportanciaTarefa = 0;
+        } else if (value == 1) {
+          xpImportanciaTarefa = 10;
+        } else if (value == 2) {
+          xpImportanciaTarefa = 20;
+        } else if (value == 3) {
+          xpImportanciaTarefa = 30;
         }
 
         if (xpImportanciaTarefa < 0) {
@@ -33,10 +34,7 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
 
         widget.onXPChanged(xpImportanciaTarefa); //Setando o xp da tarefa
       });
-
-      valorAnterior = value; //Setando o valor anterior
-      valorSlide = value; //Setando o valor do slide
-    }
+    
   }
 
   @override
@@ -63,6 +61,7 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
             label: valorSlide.round().toString(), //Define o texto do slide
             onChanged: (double value) {
               setState(() {
+                valorSlide = value;
                 updateXpDificuldade(value); //Atualiza o xp da tarefa
 
                 //Debug

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:wave_linear_progress_indicator/wave_linear_progress_indicator.dart';
 
 class BarraUsuario extends StatefulWidget {
   final User user;
@@ -12,12 +13,55 @@ class BarraUsuario extends StatefulWidget {
 class _BarraUsuarioState extends State<BarraUsuario> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).secondaryHeaderColor,
+          borderRadius: BorderRadius.circular(10),),
+        height: 150,
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Alexandre'),
+              Text("Nivel: ${widget.user.nivel}", style: TextStyle(fontSize: 15),),
+              SizedBox(
+                child: WaveLinearProgressIndicator(
+                  value: widget.user
+                      .progressao(), //A barra de progressão vai de 0 a 1
+                ),
+              )
+            ]
+          ),
+        ),
+      ),
+    );
+  }
+}
+/*
+
+child: WaveLinearProgressIndicator(
+                            value: widget.user
+                                .progressao(), //A barra de progressão vai de 0 a 1
+                          ),
+
+
+*/
+
+
+
+/*
+
+Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       height: 150,
       child: Card(
-          color: Theme.of(context).primaryColorDark,
+          color: Theme.of(context).secondaryHeaderColor,
           child: Stack(children: [
             Row(
               children: [
@@ -33,10 +77,7 @@ class _BarraUsuarioState extends State<BarraUsuario> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: LinearProgressIndicator(
-                            value: widget.user
-                                .progressao(), //A barra de progressão vai de 0 a 1
-                          ),
+                          
                         ),
                       ]),
                 ),
@@ -51,3 +92,4 @@ class _BarraUsuarioState extends State<BarraUsuario> {
     );
   }
 }
+*/

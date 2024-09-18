@@ -18,6 +18,12 @@ dependencies:
   flutter_animation_progress_bar: ^2.3.1
   firebase_core: ^3.4.1
   water_drop_nav_bar: ^2.2.2
+  wave_linear_progress_indicator: ^0.1.0
+  flutter_staggered_animations: ^1.0.0
+  capped_progress_indicator: ^0.0.2
+  flutter_date_pickers: ^0.4.3
+  intl: ^0.19.0
+
   
 
 dev_dependencies:
@@ -30,4 +36,9 @@ flutter:
   assets:
   - lib/Icones/forca.png
   - lib/Icones/
+
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: lib/Assets/Fontes/PlusJakartaSans-VariableFont_wght.ttf
 
