@@ -21,31 +21,56 @@ class ComponenteListaState extends State<ComponenteLista> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+                      elevation: 5,
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.white,
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
+                      onPressed: () async {
+                        final resultado = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CriarTarefa(
+                                    listaDeTarefas: List.from(widget.listaDeTarefas),
+                                  )),
+                        );
+                        if (resultado != null) {
+                          setState(() {
+                            widget.listaDeTarefas = resultado;
+                          });
+                        }
+                      }),
         backgroundColor: Colors.black,
         body: ListView(
           children: widget.listaDeTarefas.map((Tarefa) {
             return Card(
-              child: CheckboxListTile(
-                title: Text(Tarefa.titulo),
-                subtitle: Tarefa.descricao != ""
-                    ? Text(
-                        Tarefa.descricao,
-                        maxLines: 1,
-                      )
-                    : null,
-                secondary: Text("${Tarefa.xp} XP", style: TextStyle(fontSize: 13),),
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: Colors.green,
-                value: Tarefa
-                    .tarefaConcluida, //Verifica se a tarefa foi concluída
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      Tarefa.tarefaConcluida = value;
-                      widget.concluirTarefa(Tarefa);
-                    });
-                  }
-                },
+                child: CheckboxListTile(
+              title: Text(Tarefa.titulo),
+              subtitle: Tarefa.descricao != ""
+                  ? Text(
+                      Tarefa.descricao,
+                      maxLines: 1,
+                    )
+                  : null,
+              secondary: Text(
+                "${Tarefa.xp} XP",
+                style: TextStyle(fontSize: 13),
+              ),
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: Colors.green,
+              value:
+                  Tarefa.tarefaConcluida, //Verifica se a tarefa foi concluída
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    Tarefa.tarefaConcluida = value;
+                    widget.concluirTarefa(Tarefa);
+                  });
+                }
+              },
             ));
           }).toList(),
         ));
