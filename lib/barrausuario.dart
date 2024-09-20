@@ -27,7 +27,7 @@ class _BarraUsuarioState extends State<BarraUsuario> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Alexandre'),
+              const Text('Alexandre'),
               Text("Nivel: ${widget.user.nivel}", style: TextStyle(fontSize: 15),),
               SizedBox(
                 child: WaveLinearProgressIndicator(

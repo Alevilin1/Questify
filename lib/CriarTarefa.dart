@@ -52,7 +52,31 @@ class CriarTarefaState extends State<CriarTarefa> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text("Nova Tarefa"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              Tarefas novaTarefa = Tarefas(
+                titulo: tituloControler.text,
+                descricao: descricaoControler.text,
+                xp: xpCriacaoTarefa(),
+                atributos: atributosSelecionados,
+              );
+
+              // Salvando a tarefa no Firestore
+              await novaTarefa.salvar("teste_uid");
+
+              setState(() {
+                widget.listaDeTarefas.add(novaTarefa);
+              });
+
+              // Depois de criar a tarefa, volta para a página principal
+              Navigator.pop(context, widget.listaDeTarefas);
+            },
+            icon: const Icon(Icons.check),
+          ),
+        ],
       ),
       body: Container(
         alignment: Alignment.center,
@@ -130,7 +154,7 @@ class CriarTarefaState extends State<CriarTarefa> {
                 ),
               ),
             ),
-            ElevatedButton(
+           /*ElevatedButton(
               onPressed: () async {
                 Tarefas novaTarefa = Tarefas(
                   titulo: tituloControler.text,
@@ -150,7 +174,7 @@ class CriarTarefaState extends State<CriarTarefa> {
                 Navigator.pop(context, widget.listaDeTarefas);
               },
               child: const Text("Adicionar"),
-            ),
+            ),*/
           ],
         ),
       ),

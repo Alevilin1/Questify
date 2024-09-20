@@ -1,11 +1,6 @@
-import 'package:capped_progress_indicator/capped_progress_indicator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:flutter_quesfity/Paginas/PaginaTarefas.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
-import 'package:intl/intl.dart';
-import 'CriarTarefa.dart';
-import 'Modelos/tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -22,9 +17,9 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
+      theme: ThemeData.dark().copyWith(
         brightness: Brightness.dark,
-        primaryColor: const Color(0xFF121212),
+        primaryColor: const Color(0xFF000000),
         secondaryHeaderColor: const Color(0xFF222222),
       ),
       home: const Home(),
@@ -41,96 +36,25 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   int _selectedIndex = 0;
-  bool? confirmacaoTarefa = false;
-  User user = User(id: "");
-  List<Tarefas> listaDeTarefas = [];
+
+  static final List<Widget> paginas = <Widget>[
+    PrimeiraPagina(),
+    Scaffold(body: Center(child: Text('Status')),)
+  ];
 
   void _onItemSelected(int index) {
     setState(() {
-      _selectedIndex = index;
-      // Aqui você pode adicionar lógica para navegação entre páginas.
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _carregarUsuario(); // Carregando o usuário
-    _carregarTarefas(); // Carregando tarefas
-  }
-
-  Future<void> _carregarTarefas() async { // Carregando tarefas
-    String userId = "teste_uid"; // ID do usuário por enquanto é isso
-
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('tarefas')
-        .get();
-
-    setState(() {
-      listaDeTarefas = snapshot.docs.map((doc) {
-        List<dynamic> atributosList = doc['atributos'];
-        List<bool> atributos = atributosList.map((e) => e as bool).toList();
-        return Tarefas(
-          id: doc.id,
-          titulo: doc['titulo'],
-          descricao: doc['descricao'],
-          tarefaConcluida: doc['tarefaConcluida'],
-          xp: doc['xp'],
-          atributos: atributos,
-        );
-      }).toList();
-    });
-  }
-
-  Future<void> _carregarUsuario() async { // Carregando o usuário
-    String userId = "teste_uid";
-    User? usuarioCarregado = await User.carregar(userId);
-    if (usuarioCarregado != null) {
-      user = usuarioCarregado;
-    } else {
-      user = User(id: userId);
-      await user.salvar();
-    }
-    setState(() {}); // Atualiza a interface
-  }
-
-  void concluirTarefa(Tarefas tarefa) async {
-    await tarefa.deletarTarefa(user.id, tarefa);
-
-    setState(() {
-      tarefa.tarefaConcluida = true;
-      listaDeTarefas.remove(tarefa);
-
-      // Adicionando XP
-      user.xp += tarefa.xp;
-
-      if (tarefa.atributos[0]) {
-        user.xpAtributos['forca'] += tarefa.xp / 2;
-      }
-      if (tarefa.atributos[1]) {
-        user.xpAtributos['inteligencia'] += tarefa.xp / 2;
-      }
-      if (tarefa.atributos[2]) {
-        user.xpAtributos['destreza'] += tarefa.xp / 2;
-      }
-
-      while (user.xp >= user.xpNivel()) {
-        user.xp -= user.xpNivel();
-        user.nivel++;
-      }
-
-      user.salvar(); // Salva o XP e o nível do usuário
+      _selectedIndex = index; // Atualiza o index
+      print(_selectedIndex); 
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF000000),
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF000000),
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.menu),
@@ -140,7 +64,36 @@ class HomeState extends State<Home> {
           style: TextStyle(fontFamily: 'PlusJakartaSans'),
         ),
       ),
-      body: Padding(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: paginas,
+      ),
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.task),
+            label: 'Tarefas',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.trending_up_rounded),
+            label: 'Status',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
+        ],
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: _onItemSelected,
+      ),
+    );
+  }
+}
+
+/*
+
+Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,6 +170,7 @@ class HomeState extends State<Home> {
             const SizedBox(height: 24),
             Expanded(
               child: Scaffold(
+                // Tela de tarefas
                 floatingActionButton: FloatingActionButton(
                   elevation: 5,
                   shape: const CircleBorder(),
@@ -240,28 +194,29 @@ class HomeState extends State<Home> {
                 ),
                 backgroundColor: Colors.black,
                 body: ListView(
-                  children: listaDeTarefas.map((Tarefa) {
+                  children: listaDeTarefas.map((tarefa) {
                     return Card(
                       child: CheckboxListTile(
-                        title: Text(Tarefa.titulo),
-                        subtitle: Tarefa.descricao != ""
+                        title: Text(tarefa.titulo),
+                        subtitle: tarefa.descricao != ""
                             ? Text(
-                                Tarefa.descricao,
+                                tarefa.descricao,
                                 maxLines: 1,
                               )
                             : null,
                         secondary: Text(
-                          "${Tarefa.xp} XP",
+                          "${tarefa.xp} XP",
                           style: const TextStyle(fontSize: 13),
                         ),
                         controlAffinity: ListTileControlAffinity.leading,
                         activeColor: Colors.green,
-                        value: Tarefa.tarefaConcluida,
+                        value: tarefa.tarefaConcluida,
                         onChanged: (value) {
+                          // Quando o checkbox for alterado
                           if (value != null) {
                             setState(() {
-                              Tarefa.tarefaConcluida = value;
-                              concluirTarefa(Tarefa);
+                              tarefa.tarefaConcluida = value;
+                              concluirTarefa(tarefa);
                             });
                           }
                         },
@@ -271,32 +226,8 @@ class HomeState extends State<Home> {
                 ),
               ),
             ),
-            const Divider(),
-            NavigationBar(
-              backgroundColor: Colors.black,
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.task),
-                  label: 'Tarefas',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.trending_up_rounded),
-                  label: 'Status',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person),
-                  label: 'Perfil',
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
-
+*/
 
 
 /*
