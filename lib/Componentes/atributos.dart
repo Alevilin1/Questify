@@ -25,7 +25,7 @@ class AtributosState extends State<Atributos> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 12, top: 12),
+          padding: const EdgeInsets.only(left: 12, top: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -37,7 +37,7 @@ class AtributosState extends State<Atributos> {
                 height: 24, // Ajusta o tamanho do Container para o ícone
                 width: 24, // Ajusta a largura
                 child: IconButton(
-                  icon: Icon(Icons.info_outline,
+                  icon: const Icon(Icons.info_outline,
                       size: 24), // Define o tamanho do ícone
                   onPressed: () {
                     showDialog(
@@ -50,7 +50,7 @@ class AtributosState extends State<Atributos> {
                         });
                   },
                   padding: EdgeInsets.zero, // Remove o padding
-                  constraints: BoxConstraints(), // Remove o espaçamento padrão
+                  constraints: const BoxConstraints(), // Remove o espaçamento padrão
                 ),
               )
             ],
@@ -98,7 +98,7 @@ class AtributosState extends State<Atributos> {
                     InkWell(
                       onTap: () {
                         setState(() {
-                          selecionados[1] = !selecionados[1];
+                          selecionados[1] = !selecionados[1]; //selecinados[1] é true ou false
                           if (selecionados[1] == true) {
                             _atualizarAtributos();
                             //print("A inteligência é ${selecionados[1]}");

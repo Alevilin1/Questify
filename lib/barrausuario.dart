@@ -7,10 +7,10 @@ class BarraUsuario extends StatefulWidget {
   const BarraUsuario({super.key, required this.user});
 
   @override
-  _BarraUsuarioState createState() => _BarraUsuarioState();
+  BarraUsuarioState createState() => BarraUsuarioState();
 }
 
-class _BarraUsuarioState extends State<BarraUsuario> {
+class BarraUsuarioState extends State<BarraUsuario> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +28,7 @@ class _BarraUsuarioState extends State<BarraUsuario> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text('Alexandre'),
-              Text("Nivel: ${widget.user.nivel}", style: TextStyle(fontSize: 15),),
+              Text("Nivel: ${widget.user.nivel}", style: const TextStyle(fontSize: 15),),
               SizedBox(
                 child: WaveLinearProgressIndicator(
                   value: widget.user

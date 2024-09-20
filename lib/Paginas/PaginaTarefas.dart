@@ -7,13 +7,15 @@ import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PrimeiraPagina extends StatefulWidget {
+  User user;
+  PrimeiraPagina({required this.user});
+
   @override
   _PrimeiraPaginaState createState() => _PrimeiraPaginaState();
 }
 
 class _PrimeiraPaginaState extends State<PrimeiraPagina> {
   bool? confirmacaoTarefa = false;
-  User user = User(id: "");
   List<Tarefas> listaDeTarefas = [];
 
   @override
@@ -54,40 +56,40 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
     String userId = "teste_uid";
     User? usuarioCarregado = await User.carregar(userId);
     if (usuarioCarregado != null) {
-      user = usuarioCarregado;
+      widget.user = usuarioCarregado;
     } else {
-      user = User(id: userId);
-      await user.salvar();
+      widget.user = User(id: userId);
+      await widget.user.salvar();
     }
     setState(() {}); // Atualiza a interface
   }
 
   void concluirTarefa(Tarefas tarefa) async {
-    await tarefa.deletarTarefa(user.id, tarefa);
+    await tarefa.deletarTarefa(widget.user.id, tarefa);
 
     setState(() {
       tarefa.tarefaConcluida = true;
       listaDeTarefas.remove(tarefa);
 
       // Adicionando XP
-      user.xp += tarefa.xp;
+      widget.user.xp += tarefa.xp;
 
       if (tarefa.atributos[0]) {
-        user.xpAtributos['forca'] += tarefa.xp / 2;
+        widget.user.xpAtributos['forca'] += tarefa.xp / 2;
       }
       if (tarefa.atributos[1]) {
-        user.xpAtributos['inteligencia'] += tarefa.xp / 2;
+        widget.user.xpAtributos['inteligencia'] += tarefa.xp / 2;
       }
       if (tarefa.atributos[2]) {
-        user.xpAtributos['destreza'] += tarefa.xp / 2;
+        widget.user.xpAtributos['destreza'] += tarefa.xp / 2;
       }
 
-      while (user.xp >= user.xpNivel()) {
-        user.xp -= user.xpNivel();
-        user.nivel++;
+      while (widget.user.xp >= widget.user.xpNivel()) {
+        widget.user.xp -= widget.user.xpNivel();
+        widget.user.nivel++;
       }
 
-      user.salvar(); // Salva o XP e o nível do usuário
+      widget.user.salvar(); // Salva o XP e o nível do usuário
     });
   }
 
@@ -101,7 +103,7 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Seu nivel é: ${user.nivel}',
+                'Seu nivel é: ${widget.user.nivel}',
                 style: const TextStyle(
                     fontSize: 15, fontFamily: 'PlusJakartaSans'),
               ),
@@ -110,7 +112,7 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
               minHeight: 10,
               color: const Color(0xFFFFFFFF),
               backgroundColor: const Color(0xFFCCCCCC),
-              value: user.progressao(),
+              value: widget.user.progressao(),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -193,37 +195,57 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                   },
                 ),
                 backgroundColor: Colors.black,
-                body: ListView(
-                  children: listaDeTarefas.map((tarefa) {
-                    return Card(
-                      child: CheckboxListTile(
-                        title: Text(tarefa.titulo),
-                        subtitle: tarefa.descricao != ""
-                            ? Text(
-                                tarefa.descricao,
-                                maxLines: 1,
-                              )
-                            : null,
-                        secondary: Text(
-                          "${tarefa.xp} XP",
-                          style: const TextStyle(fontSize: 13),
+                body: listaDeTarefas.isEmpty
+                    ? const Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              "Nenhuma tarefa encontrada.",
+                              style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  color: Colors.white),
+                            ),
+                          ],
                         ),
-                        controlAffinity: ListTileControlAffinity.leading,
-                        activeColor: Colors.green,
-                        value: tarefa.tarefaConcluida,
-                        onChanged: (value) {
-                          // Quando o checkbox for alterado
-                          if (value != null) {
-                            setState(() {
-                              tarefa.tarefaConcluida = value;
-                              concluirTarefa(tarefa);
-                            });
-                          }
-                        },
+                      )
+                    : ListView(
+                        children: listaDeTarefas.map((tarefa) {
+                          return Card(
+                            child: CheckboxListTile(
+                              title: Text(tarefa.titulo),
+                              subtitle: tarefa.descricao != ""
+                                  ? Text(
+                                      tarefa.descricao,
+                                      maxLines: 1,
+                                    )
+                                  : null,
+                              secondary: Text(
+                                "${tarefa.xp} XP",
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                              controlAffinity: ListTileControlAffinity.leading,
+                              activeColor: Colors.green,
+                              value: tarefa.tarefaConcluida,
+                              onChanged: (value) {
+                                // Quando o checkbox for alterado
+                                if (value != null) {
+                                  setState(() {
+                                    tarefa.tarefaConcluida = value;
+                                    concluirTarefa(tarefa);
+                                  });
+                                }
+                              },
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    );
-                  }).toList(),
-                ),
               ),
             ),
           ],

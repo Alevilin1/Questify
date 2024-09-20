@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quesfity/Autentificacao/Autentificacao.dart';
+import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/Paginas/PaginaTarefas.dart';
+import 'package:flutter_quesfity/Paginas/StatusPagina.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -8,8 +11,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Inicializando o Firebase
+
   runApp(const Main());
 }
+
 
 class Main extends StatelessWidget {
   const Main({super.key});
@@ -22,7 +27,7 @@ class Main extends StatelessWidget {
         primaryColor: const Color(0xFF000000),
         secondaryHeaderColor: const Color(0xFF222222),
       ),
-      home: const Home(),
+      home: Login(),
     );
   }
 }
@@ -36,21 +41,45 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   int _selectedIndex = 0;
-
-  static final List<Widget> paginas = <Widget>[
-    PrimeiraPagina(),
-    Scaffold(body: Center(child: Text('Status')),)
-  ];
+  User user = User(id: "");
 
   void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index; // Atualiza o index
-      print(_selectedIndex); 
+      print(_selectedIndex);
     });
+  }
+
+  Future<void> _carregarUsuario() async {
+    // Carregando o usuário
+    String userId = "teste_uid";
+    User? usuarioCarregado = await User.carregar(userId);
+    if (usuarioCarregado != null) {
+      user = usuarioCarregado;
+    } else {
+      user = User(id: userId);
+      await user.salvar();
+    }
+    setState(() {}); // Atualiza a interface
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarUsuario(); // Carregando o usuário
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> paginas = <Widget>[
+      PrimeiraPagina(
+        user: user,
+      ),
+      StatusPagina(
+        user: user,
+      ),
+    ];
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -84,8 +113,8 @@ class HomeState extends State<Home> {
             label: 'Perfil',
           ),
         ],
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: _onItemSelected,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemSelected,
       ),
     );
   }
@@ -228,7 +257,6 @@ Padding(
             ),
 
 */
-
 
 /*
 
@@ -541,4 +569,3 @@ class HomeState extends State<Home> {
 
 
 */
-

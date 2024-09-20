@@ -35,6 +35,7 @@ flutter:
   uses-material-design: true
   assets:
   - lib/Icones/forca.png
+  - lib/Icones/logo.png
   - lib/Icones/
 
   fonts:
