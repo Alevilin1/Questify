@@ -17,6 +17,7 @@ class LoginState extends State<Login> {
   TextEditingController nomeControler = TextEditingController();
   bool queroEntrar = true;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,14 +132,14 @@ class LoginState extends State<Login> {
         _authServico.loginUsuario(
             email: emailControler.text, senha: senhaControler.text);
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const RoteadorTela()));
+            MaterialPageRoute(builder: (context) => RoteadorTela()));
       } else {
         _authServico.cadastrarUsuario(
             email: emailControler.text,
             senha: senhaControler.text,
             nome: nomeControler.text);
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const RoteadorTela()));
+            MaterialPageRoute(builder: (context) => RoteadorTela()));
       }
     }
   }

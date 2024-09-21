@@ -8,6 +8,7 @@ class AutentificacaoServico {
       required String nome}) async {
     await _auth.createUserWithEmailAndPassword(
         email: email, password: senha);
+
   }
 
   Future<String?> loginUsuario(

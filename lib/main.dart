@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Autentificacao/Autentificacao.dart';
+import 'package:flutter_quesfity/Componentes/SideBar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/Paginas/PaginaTarefas.dart';
 import 'package:flutter_quesfity/Paginas/StatusPagina.dart';
@@ -18,15 +19,26 @@ void main() async {
 
 class Main extends StatelessWidget {
   const Main({super.key});
+  final bool isDarkTheme = true;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark().copyWith(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+        secondaryHeaderColor: Colors.grey[200],
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+        ),
+      ),
+      darkTheme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: const Color(0xFF000000),
-        secondaryHeaderColor: const Color(0xFF222222),
+        secondaryHeaderColor: const Color(0xFF1E1E1E),
       ),
+      themeMode: ThemeMode.dark,
       home: const RoteadorTela(),
     );
   }
@@ -108,18 +120,7 @@ class HomeState extends State<Home> {
     ];
 
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(children: [
-          ListTile(
-            title: const Text("Sair"),
-            onTap: () {
-              firebase_auth.FirebaseAuth.instance.signOut();
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => Login()));
-            },
-          )
-        ]),
-      ),
+      drawer: SideBar(),
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -135,6 +136,7 @@ class HomeState extends State<Home> {
           "Todos",
           style: TextStyle(fontFamily: 'PlusJakartaSans'),
         ),
+        actions: [],
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -162,4 +164,3 @@ class HomeState extends State<Home> {
     );
   }
 }
-
