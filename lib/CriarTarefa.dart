@@ -4,6 +4,8 @@ import 'package:flutter_quesfity/Componentes/dificuldade.dart';
 import 'package:flutter_quesfity/Componentes/importancia.dart';
 import 'package:flutter_quesfity/Componentes/titulo.dart';
 import 'Modelos/tarefas.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+
 
 // ignore: must_be_immutable
 class CriarTarefa extends StatefulWidget {
@@ -57,6 +59,14 @@ class CriarTarefaState extends State<CriarTarefa> {
         actions: [
           IconButton(
             onPressed: () async {
+              final firebaseUser =
+                  firebase_auth.FirebaseAuth.instance.currentUser; // Usando o uid do Firebase Auth
+
+              if (firebaseUser != null) {
+                // Usando o uid do Firebase Auth
+                String userId = firebaseUser.uid;
+              
+
               Tarefas novaTarefa = Tarefas(
                 titulo: tituloControler.text,
                 descricao: descricaoControler.text,
@@ -65,7 +75,7 @@ class CriarTarefaState extends State<CriarTarefa> {
               );
 
               // Salvando a tarefa no Firestore
-              await novaTarefa.salvar("teste_uid");
+              await novaTarefa.salvar(userId);
 
               setState(() {
                 widget.listaDeTarefas.add(novaTarefa);
@@ -73,7 +83,8 @@ class CriarTarefaState extends State<CriarTarefa> {
 
               // Depois de criar a tarefa, volta para a página principal
               Navigator.pop(context, widget.listaDeTarefas);
-            },
+            }
+          },
             icon: const Icon(Icons.check),
           ),
         ],

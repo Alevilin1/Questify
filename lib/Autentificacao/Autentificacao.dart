@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Autentificacao/Widgets/ConfirmarSenhaField.dart';
-import 'package:flutter_quesfity/Autentificacao/Widgets/EmailField.dart';
-import 'package:flutter_quesfity/Autentificacao/Widgets/NomeField.dart';
-import 'package:flutter_quesfity/Autentificacao/Widgets/SenhaField.dart';
+import 'package:flutter_quesfity/Servi%C3%A7os/AutenticacaoServico.dart';
+import 'package:flutter_quesfity/main.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -12,7 +10,13 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
+  final _formKey = GlobalKey<FormState>();
+  AutentificacaoServico _authServico = AutentificacaoServico();
+  TextEditingController senhaControler = TextEditingController();
+  TextEditingController emailControler = TextEditingController();
+  TextEditingController nomeControler = TextEditingController();
   bool queroEntrar = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,32 +27,82 @@ class LoginState extends State<Login> {
         title: Text(queroEntrar ? "Entrar" : "Registrar"),
       ),
       body: Form(
+        key: _formKey,
         child: ListView(
           shrinkWrap: true, //true para que o ListView tenha altura definida
           padding: const EdgeInsets.all(24),
           children: [
-            Visibility(visible: !queroEntrar, child: NomeField(),),
-            const SizedBox(
-              height: 24,
-            ),
-            Emailfield(),
-            const SizedBox(
-              height: 24,
-            ),
-            SenhaField(),
-            const SizedBox(
-              height: 24,
-            ),
             Visibility(
               visible: !queroEntrar,
-              child: SenhaConfirmarField(),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nome',
+                ),
+                controller: nomeControler,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, digite seu nome';
+                  }
+
+                  if (value.length < 3) {
+                    return 'Por favor, digite um nome maior';
+                  }
+
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Email'),
+              controller: emailControler,
+              validator: (value) {
+                //Validação do email
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, digite seu email';
+                }
+
+                if (!value.contains('@') || !value.contains('.')) {
+                  return 'Por favor, digite um email valido';
+                }
+
+                if (value.length < 6) {
+                  return 'Por favor, digite um email valido';
+                }
+
+                return null;
+              },
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Senha',
+              ),
+              controller: senhaControler,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, digite sua senha';
+                }
+
+                if (value.length < 6) {
+                  return 'Por favor, digite uma senha maior';
+                }
+                return null;
+              },
             ),
             const SizedBox(
               height: 24,
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/principal');
+                botaoPrincipal();
               },
               child: Text(queroEntrar ? 'Entrar' : 'Registrar'),
             ),
@@ -69,5 +123,23 @@ class LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  botaoPrincipal() {
+    if (_formKey.currentState!.validate()) {
+      if (queroEntrar) {
+        _authServico.loginUsuario(
+            email: emailControler.text, senha: senhaControler.text);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const RoteadorTela()));
+      } else {
+        _authServico.cadastrarUsuario(
+            email: emailControler.text,
+            senha: senhaControler.text,
+            nome: nomeControler.text);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const RoteadorTela()));
+      }
+    }
   }
 }

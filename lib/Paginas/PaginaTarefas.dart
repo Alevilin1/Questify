@@ -5,6 +5,8 @@ import 'package:flutter_quesfity/Modelos/tarefas.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+
 
 class PrimeiraPagina extends StatefulWidget {
   User user;
@@ -18,51 +20,44 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
   bool? confirmacaoTarefa = false;
   List<Tarefas> listaDeTarefas = [];
 
+    Future<void> _carregarTarefas() async {
+    final firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
+
+    if (firebaseUser != null) {
+      String userId = firebaseUser.uid; // Usando o uid do usuário autenticado
+
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('tarefas')
+          .get();
+
+      setState(() {
+        listaDeTarefas = snapshot.docs.map((doc) {
+          List<dynamic> atributosList = doc['atributos'];
+          List<bool> atributos = atributosList.map((e) => e as bool).toList();
+          return Tarefas(
+            id: doc.id,
+            titulo: doc['titulo'],
+            descricao: doc['descricao'],
+            tarefaConcluida: doc['tarefaConcluida'],
+            xp: doc['xp'],
+            atributos: atributos,
+          );
+        }).toList();
+      });
+    } else {
+      // Lidar com o caso em que não há usuário autenticado
+      print("Nenhum usuário autenticado.");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _carregarUsuario(); // Carregando o usuário
-    _carregarTarefas(); // Carregando tarefas
+    _carregarTarefas();
   }
 
-  Future<void> _carregarTarefas() async {
-    // Carregando tarefas
-    String userId = "teste_uid"; // ID do usuário por enquanto é isso
-
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('tarefas')
-        .get();
-
-    setState(() {
-      listaDeTarefas = snapshot.docs.map((doc) {
-        List<dynamic> atributosList = doc['atributos'];
-        List<bool> atributos = atributosList.map((e) => e as bool).toList();
-        return Tarefas(
-          id: doc.id,
-          titulo: doc['titulo'],
-          descricao: doc['descricao'],
-          tarefaConcluida: doc['tarefaConcluida'],
-          xp: doc['xp'],
-          atributos: atributos,
-        );
-      }).toList();
-    });
-  }
-
-  Future<void> _carregarUsuario() async {
-    // Carregando o usuário
-    String userId = "teste_uid";
-    User? usuarioCarregado = await User.carregar(userId);
-    if (usuarioCarregado != null) {
-      widget.user = usuarioCarregado;
-    } else {
-      widget.user = User(id: userId);
-      await widget.user.salvar();
-    }
-    setState(() {}); // Atualiza a interface
-  }
 
   void concluirTarefa(Tarefas tarefa) async {
     await tarefa.deletarTarefa(widget.user.id, tarefa);
