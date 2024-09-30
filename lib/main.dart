@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Autentificacao/Autentificacao.dart';
-import 'package:flutter_quesfity/Componentes/SideBar.dart';
+import 'package:flutter_quesfity/Autentificacao/autentificacao.dart';
+import 'package:flutter_quesfity/Paginas/pagina_filtros.dart';
+import 'package:flutter_quesfity/Componentes/side_bar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
-import 'package:flutter_quesfity/Paginas/PaginaTarefas.dart';
-import 'package:flutter_quesfity/Paginas/StatusPagina.dart';
+import 'package:flutter_quesfity/Paginas/pagina_tarefas.dart';
+import 'package:flutter_quesfity/Paginas/status_pagina.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -86,12 +87,14 @@ class HomeState extends State<Home> {
     if (firebaseUser != null) {
       // Usando o uid do Firebase Auth
       String userId = firebaseUser.uid;
-      User? usuarioCarregado = await User.carregar(userId);
+      User? usuarioCarregado =
+          await User.carregar(userId); // Carregando o usuário
 
       if (usuarioCarregado != null) {
-        user = usuarioCarregado;
+        // Caso o usuário tenha sido carregado
+        user = usuarioCarregado; // Usando o usuário carregado'
       } else {
-        user = User(id: userId);
+        user = User(id: userId); // Cria um novo usuário
         await user.salvar();
       }
 
@@ -99,6 +102,21 @@ class HomeState extends State<Home> {
     } else {
       // Aqui você pode lidar com o caso em que não há usuário autenticado
       print("Nenhum usuário autenticado.");
+    }
+  }
+
+  void navegarParaPaginaListas() async { // Navega para a pagina de listas
+    final updatedUser = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaginaListas(user: user),
+      ),
+    );
+
+    if (updatedUser != null) {  // Caso o usuário tenha sido atualizado
+      setState(() {
+        user = updatedUser; // Atualiza o usuário
+      });
     }
   }
 
@@ -136,7 +154,14 @@ class HomeState extends State<Home> {
           "Todos",
           style: TextStyle(fontFamily: 'PlusJakartaSans'),
         ),
-        actions: [],
+        actions: [
+          IconButton(
+            onPressed: () {
+              navegarParaPaginaListas();
+            },
+            icon: const Icon(Icons.add_to_photos_sharp),
+          ),
+        ],
       ),
       body: IndexedStack(
         index: _selectedIndex,

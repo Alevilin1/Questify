@@ -7,7 +7,7 @@ class Tarefas {
   String descricao;
   double xp;
   DateTime? data = DateTime.now();
-  String? filtro;
+  String filtroTarefa;
   bool? tarefaConcluida = false;
   List<bool> atributos;
 
@@ -18,9 +18,8 @@ class Tarefas {
     required this.descricao,
     required this.atributos,
     this.data,
-    this.filtro,
     this.tarefaConcluida = false,
-    
+    this.filtroTarefa = '',
   });
 
   // Função para salvar tarefa no Firestore
@@ -35,6 +34,7 @@ class Tarefas {
       'tarefaConcluida': tarefaConcluida,
       'xp': xp,
       'atributos': atributos,
+      'filtroTarefa': filtroTarefa,
     });
     id = docRef.id;
   }

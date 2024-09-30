@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Servi%C3%A7os/AutenticacaoServico.dart';
+import 'package:flutter_quesfity/Serviços/autentificacao_servico.dart';
 import 'package:flutter_quesfity/main.dart';
 
 class Login extends StatefulWidget {
@@ -101,6 +101,24 @@ class LoginState extends State<Login> {
             const SizedBox(
               height: 24,
             ),
+            Visibility(
+              visible: !queroEntrar,
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Confirmar Senha',
+                ),
+                validator: (value) {
+                  if (value != senhaControler.text) {
+                    return 'As senhas devem ser iguais';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
             ElevatedButton(
               onPressed: () {
                 botaoPrincipal();
@@ -117,7 +135,7 @@ class LoginState extends State<Login> {
                 });
               },
               child: Text(queroEntrar
-                  ? "Não tem uma conta? Clique aqui!"
+                  ? "Não tem uma conta? Clique aqui"
                   : "Já tem uma conta? Clique aqui"),
             )
           ],

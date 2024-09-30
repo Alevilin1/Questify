@@ -43,8 +43,8 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: const EdgeInsets.only(left: 12), //Padding para o texto
-          child: const Text(
+          padding: EdgeInsets.only(left: 12), //Padding para o texto
+          child: Text(
             "Importancia",
             style: TextStyle(fontSize: 15),
           ),

@@ -24,6 +24,7 @@ dependencies:
   flutter_date_pickers: ^0.4.3
   intl: ^0.19.0
   firebase_auth: ^5.3.0
+  dropdown_button2: ^2.3.9
 
   
 
