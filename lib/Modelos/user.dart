@@ -5,7 +5,7 @@ class User {
   double xp;
   int nivel;
 
-  List<dynamic> filtros;
+  List<dynamic> filtros; // Lista de filtros
 
   Map<String, dynamic> xpAtributos = {}; // xp dos atributos
   Map<String, dynamic> nivelAtributos = {}; // nivel dos atributos
@@ -16,7 +16,7 @@ class User {
     this.nivel = 1,
     Map<String, dynamic>? xpAtributos,
     Map<String, dynamic>? nivelAtributos,
-    this.filtros = const ['Trabalho', 'Pessoal', 'Estudo'],
+    List<dynamic>? filtros,
   })  : xpAtributos = xpAtributos ?? // Inicializando os valores do xp
             {
               'forca': 0,
@@ -28,7 +28,13 @@ class User {
               'forca': 1,
               'inteligencia': 1,
               'destreza': 1,
-            };
+            },
+        filtros = filtros ??
+            [
+              'Trabalho',
+              'Pessoal',
+              'Estudo'
+            ]; // Inicializando os filtros padrao
 
   //Salvando os dados do usuario
   Future<void> salvar() async {
@@ -38,16 +44,14 @@ class User {
       'nivel': nivel,
       'xpAtributos': xpAtributos,
       'nivelAtributos': nivelAtributos,
-      'filtros' : filtros
+      'filtros': filtros
     });
   }
 
   // Atualiza os filtros
   Future<void> atualizarFiltro() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    await firestore.collection('users').doc(id).update({
-      'filtros': filtros
-    });
+    await firestore.collection('users').doc(id).update({'filtros': filtros});
   }
 
   // Carrega os dados do usuário do Firestore

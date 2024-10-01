@@ -28,6 +28,10 @@ class Main extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.white,
+        fontFamily: 'PlusJakartaSans',
+        textTheme: Theme.of(context).textTheme.apply(
+          fontFamily: 'PlusJakartaSans',
+        ),
         secondaryHeaderColor: Colors.grey[200],
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
@@ -38,6 +42,10 @@ class Main extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: const Color(0xFF000000),
         secondaryHeaderColor: const Color(0xFF1E1E1E),
+        textTheme: Theme.of(context).textTheme.apply(
+            fontFamily: 'PlusJakartaSans',
+            bodyColor: Colors.white
+        ),
       ),
       themeMode: ThemeMode.dark,
       home: const RoteadorTela(),

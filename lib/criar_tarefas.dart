@@ -59,7 +59,10 @@ class CriarTarefaState extends State<CriarTarefa> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text("Nova Tarefa"),
+        title: const Text(
+          "Nova Tarefa",
+          style: TextStyle(fontFamily: 'PlusJakartaSans'),
+        ),
         actions: [
           IconButton(
             onPressed: () async {
@@ -109,28 +112,19 @@ class CriarTarefaState extends State<CriarTarefa> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5),
+                        const Padding(
+                          padding: EdgeInsets.all(5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 "Básico",
                                 style: TextStyle(fontSize: 18),
-                              ),
-                              ActionChip(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                label: const Text(
-                                  "Filtros",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                onPressed: () {},
                               ),
                             ],
                           ),
                         ),
+                        const SizedBox(height: 12),
                         Padding(
                           padding: const EdgeInsets.only(left: 15, right: 15),
                           child: TextFormField(
@@ -151,37 +145,34 @@ class CriarTarefaState extends State<CriarTarefa> {
                         const SizedBox(height: 25),
                         Padding(
                           padding: const EdgeInsets.only(left: 15, right: 15),
-                          child: DropdownButton2(
+                          child: DropdownButtonFormField(
                             isExpanded: true,
                             autofocus: true,
                             hint: Text(
-                              filtroSelecionado.isEmpty ? 'Selecione um filtro' : filtroSelecionado,
+                              filtroSelecionado.isEmpty
+                                  ? 'Selecione um filtro'
+                                  : filtroSelecionado,
                               style: const TextStyle(
                                 fontSize: 14,
                               ),
                             ),
-                            buttonStyleData: ButtonStyleData(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.grey,
-                                ),
-                              ),
+                            decoration: const InputDecoration(
+                              labelText: 'Filtro',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.all(10),
                             ),
                             items: widget.user.filtros.map((filtro) {
                               return DropdownMenuItem(
                                 value: filtro,
                                 child: Text(filtro),
                               );
-                            }).toList(), // Aqui convertemos o Iterable para List com toList()
+                            }).toList(), //Convertendo para lista
                             onChanged: (selectedValue) {
-
                               setState(() {
                                 filtroSelecionado = selectedValue.toString();
                               });
-                            
-                              // Sua lógica de mudança aqui
-                              print(selectedValue);
+
+                              //print(selectedValue);
                             },
                           ),
                         ),

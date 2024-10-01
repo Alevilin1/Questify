@@ -20,7 +20,6 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
   List<Tarefas> listaDeTarefas = [];
   List<String> filtrosSelecionados = [];
 
-
   List<Tarefas> _filtrarTarefas() {
     if (filtrosSelecionados.isEmpty) {
       return listaDeTarefas; // Retorna todas as tarefas se nenhum filtro estiver selecionado
@@ -100,10 +99,8 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     final tarefasFiltradas = _filtrarTarefas();
 
     return Padding(
@@ -119,11 +116,21 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                     fontSize: 15, fontFamily: 'PlusJakartaSans'),
               ),
             ),
-            LinearCappedProgressIndicator(
-              minHeight: 10,
-              color: const Color(0xFFFFFFFF),
-              backgroundColor: const Color(0xFFCCCCCC),
-              value: widget.user.progressao(),
+            TweenAnimationBuilder(
+              tween: Tween<double>(
+                begin: 0.0,
+                end: widget.user.progressao(),
+              ),
+              duration:
+                  const Duration(seconds: 1), // Ajuste o tempo da animação
+              builder: (context, double value, child) {
+                return LinearCappedProgressIndicator(
+                  minHeight: 10,
+                  color: const Color(0xFFFFFFFF),
+                  backgroundColor: const Color(0xFFCCCCCC),
+                  value: value,
+                );
+              },
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -136,32 +143,34 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
             Container(
               height: 40,
               child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: widget.user.filtros.map((filtros) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: FilterChip(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      label: Text(
-                        filtros,
-                        style: const TextStyle(fontFamily: 'PlusJakartaSans'),
-                      ),
-                      selected: filtrosSelecionados.contains(filtros),
-                      onSelected: (bool selected) {
-                        setState(() {
-                          if (selected) {
-                            filtrosSelecionados.add(filtros);
-                          } else {
-                            filtrosSelecionados.remove(filtros);
-                          }
-              
-                          //print(filtrosSelecionados);
-                        });
-                      }),
-                );
-              }).toList()),
+                  scrollDirection: Axis.horizontal,
+                  children: widget.user.filtros.map((filtros) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8), //Espacamento entre os filtros
+                      child: FilterChip(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          label: Text(
+                            filtros,
+                            style:
+                                const TextStyle(fontFamily: 'PlusJakartaSans'),
+                          ),
+                          selected: filtrosSelecionados.contains(filtros),
+                          onSelected: (bool selected) {
+                            setState(() {
+                              if (selected) {
+                                filtrosSelecionados.add(filtros);
+                              } else {
+                                filtrosSelecionados.remove(filtros);
+                              }
+
+                              //print(filtrosSelecionados);
+                            });
+                          }),
+                    );
+                  }).toList()),
             ),
             const SizedBox(height: 24),
             Expanded(
@@ -213,30 +222,35 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                     : ListView(
                         children: tarefasFiltradas.map((tarefa) {
                           return Card(
-                            child: CheckboxListTile(
+                            child: ListTile(
                               title: Text(tarefa.titulo),
-                              subtitle: tarefa.descricao != ""
-                                  ? Text(
+                              leading: SizedBox(
+                                width: 30,
+                                child: Checkbox(
+                                    value: tarefa.tarefaConcluida,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        setState(() {
+                                          tarefa.tarefaConcluida = value;
+                                          concluirTarefa(tarefa);
+                                        });
+                                      }
+                                    }),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (tarefa.descricao.isNotEmpty)
+                                    Text(
                                       tarefa.descricao,
                                       maxLines: 1,
-                                    )
-                                  : null,
-                              secondary: Text(
-                                "${tarefa.xp} XP",
-                                style: const TextStyle(fontSize: 13),
+                                    ),
+                                ],
                               ),
-                              controlAffinity: ListTileControlAffinity.leading,
-                              activeColor: Colors.green,
-                              value: tarefa.tarefaConcluida,
-                              onChanged: (value) {
-                                // Quando o checkbox for alterado
-                                if (value != null) {
-                                  setState(() {
-                                    tarefa.tarefaConcluida = value;
-                                    concluirTarefa(tarefa);
-                                  });
-                                }
-                              },
+                              trailing: Text(
+                                "${tarefa.xp.toString()} XP",
+                                style: TextStyle(fontSize: 14),
+                              ),
                             ),
                           );
                         }).toList(),
