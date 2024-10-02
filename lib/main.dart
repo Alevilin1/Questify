@@ -5,6 +5,7 @@ import 'package:flutter_quesfity/Paginas/pagina_filtros.dart';
 import 'package:flutter_quesfity/Componentes/side_bar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/Paginas/pagina_tarefas.dart';
+import 'package:flutter_quesfity/Paginas/pagina_testes.dart';
 import 'package:flutter_quesfity/Paginas/status_pagina.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -143,6 +144,7 @@ class HomeState extends State<Home> {
       StatusPagina(
         user: user,
       ),
+      TestePagina(),
     ];
 
     return Scaffold(
@@ -167,7 +169,7 @@ class HomeState extends State<Home> {
             onPressed: () {
               navegarParaPaginaListas();
             },
-            icon: const Icon(Icons.add_to_photos_sharp),
+            icon: const Icon(Icons.format_list_numbered),
           ),
         ],
       ),

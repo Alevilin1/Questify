@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quesfity/Componentes/progressao.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_quesfity/criar_tarefas.dart';
 import 'package:flutter_quesfity/Modelos/tarefas.dart';
@@ -116,22 +117,7 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                     fontSize: 15, fontFamily: 'PlusJakartaSans'),
               ),
             ),
-            TweenAnimationBuilder(
-              tween: Tween<double>(
-                begin: 0.0,
-                end: widget.user.progressao(),
-              ),
-              duration:
-                  const Duration(seconds: 1), // Ajuste o tempo da animação
-              builder: (context, double value, child) {
-                return LinearCappedProgressIndicator(
-                  minHeight: 10,
-                  color: const Color(0xFFFFFFFF),
-                  backgroundColor: const Color(0xFFCCCCCC),
-                  value: value,
-                );
-              },
-            ),
+            Progressao(user: widget.user),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
@@ -233,20 +219,11 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                                         setState(() {
                                           tarefa.tarefaConcluida = value;
                                           concluirTarefa(tarefa);
-                                        });
+                                        });                                      
                                       }
                                     }),
                               ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (tarefa.descricao.isNotEmpty)
-                                    Text(
-                                      tarefa.descricao,
-                                      maxLines: 1,
-                                    ),
-                                ],
-                              ),
+                              subtitle: tarefa.descricao.isNotEmpty ? Text(tarefa.descricao) : null,
                               trailing: Text(
                                 "${tarefa.xp.toString()} XP",
                                 style: TextStyle(fontSize: 14),

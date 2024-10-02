@@ -45,7 +45,7 @@ class PaginaListasState extends State<PaginaListas> {
                         Navigator.pop(context, widget.user);
                       });
                     },
-                    icon: Icon(Icons.delete)),
+                    icon: const Icon(Icons.delete)),
               );
             },
           ),

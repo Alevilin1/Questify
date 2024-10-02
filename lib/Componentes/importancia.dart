@@ -21,11 +21,11 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
         if (value == 0) {
           xpImportanciaTarefa = 0;
         } else if (value == 1) {
-          xpImportanciaTarefa = 10;
-        } else if (value == 2) {
           xpImportanciaTarefa = 20;
+        } else if (value == 2) {
+          xpImportanciaTarefa = 40;
         } else if (value == 3) {
-          xpImportanciaTarefa = 30;
+          xpImportanciaTarefa = 60;
         }
 
         if (xpImportanciaTarefa < 0) {
