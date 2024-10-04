@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quesfity/Componentes/levelUp.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_quesfity/criar_tarefas.dart';
@@ -72,11 +73,11 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
   }
 
   void concluirTarefa(Tarefas tarefa) async {
-    await tarefa.deletarTarefa(widget.user.id, tarefa);
+    await tarefa.deletarTarefa(widget.user.id, tarefa); // Deleta a tarefa
 
     setState(() {
-      tarefa.tarefaConcluida = true;
-      listaDeTarefas.remove(tarefa);
+      tarefa.tarefaConcluida = true; // Conclui a tarefa
+      listaDeTarefas.remove(tarefa); // Remove a tarefa da lista
 
       // Adicionando XP
       widget.user.xp += tarefa.xp;
@@ -92,10 +93,17 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
       }
 
       while (widget.user.xp >= widget.user.xpNivel()) {
-        widget.user.xp -= widget.user.xpNivel();
-        widget.user.nivel++;
+        widget.user.xp -= widget.user.xpNivel(); // Remove XP para o proximo nivel
+        widget.user.nivel++; // Aumenta o nível do usuário
+
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Levelup(user: widget.user); // Mostra o level up
+            });
       }
 
+      widget.user.tarefasConcluidas++; // Aumenta o contador de tarefas concluidas
       widget.user.salvar(); // Salva o XP e o nível do usuário
     });
   }
@@ -120,9 +128,17 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
             Progressao(user: widget.user),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                DateFormat.MMMMEEEEd().format(DateTime.now()),
-                style: const TextStyle(fontFamily: 'PlusJakartaSans'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    DateFormat.MMMMEEEEd().format(DateTime.now()),
+                    style: const TextStyle(fontFamily: 'PlusJakartaSans'),
+                  ),
+                  Text(
+                    "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()}",
+                  )
+                ],
               ),
             ),
             const SizedBox(height: 24),
@@ -219,14 +235,16 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                                         setState(() {
                                           tarefa.tarefaConcluida = value;
                                           concluirTarefa(tarefa);
-                                        });                                      
+                                        });
                                       }
                                     }),
                               ),
-                              subtitle: tarefa.descricao.isNotEmpty ? Text(tarefa.descricao) : null,
+                              subtitle: tarefa.descricao.isNotEmpty
+                                  ? Text(tarefa.descricao)
+                                  : null,
                               trailing: Text(
                                 "${tarefa.xp.toString()} XP",
-                                style: TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 14),
                               ),
                             ),
                           );

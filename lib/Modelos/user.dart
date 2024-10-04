@@ -4,6 +4,7 @@ class User {
   String id;
   double xp;
   int nivel;
+  int tarefasConcluidas;
 
   List<dynamic> filtros; // Lista de filtros
 
@@ -13,7 +14,8 @@ class User {
   User({
     required this.id,
     this.xp = 0,
-    this.nivel = 1,
+    this.tarefasConcluidas = 0,
+    int? nivel,
     Map<String, dynamic>? xpAtributos,
     Map<String, dynamic>? nivelAtributos,
     List<dynamic>? filtros,
@@ -34,7 +36,8 @@ class User {
               'Trabalho',
               'Pessoal',
               'Estudo'
-            ]; // Inicializando os filtros padrao
+            ], // Inicializando os filtros padrao
+        nivel = nivel ?? 1; // Inicializando o nivel padrao
 
   //Salvando os dados do usuario
   Future<void> salvar() async {
@@ -44,7 +47,8 @@ class User {
       'nivel': nivel,
       'xpAtributos': xpAtributos,
       'nivelAtributos': nivelAtributos,
-      'filtros': filtros
+      'filtros': filtros,
+      'tarefasConcluidas': tarefasConcluidas
     });
   }
 
@@ -69,6 +73,7 @@ class User {
         xpAtributos: data?['xpAtributos'] ?? {},
         nivelAtributos: data?['nivelAtributos'] ?? {},
         filtros: data?['filtros'] ?? [],
+        tarefasConcluidas: data?['tarefasConcluidas'] ?? 0,
       );
     }
     return null; // Caso o usuário não exista

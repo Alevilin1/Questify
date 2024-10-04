@@ -160,17 +160,41 @@ class HomeState extends State<Home> {
             icon: const Icon(Icons.menu),
           ),
         ),
-        title: const Text(
-          "Todos",
-          style: TextStyle(fontFamily: 'PlusJakartaSans'),
+        title: Row(
+          children: [
+
+            Visibility(
+            visible: _selectedIndex == 0,
+            child: const Text(
+              "Tarefas",
+              style: TextStyle(fontFamily: 'PlusJakartaSans'),
+            )
+            ),
+
+            Visibility(
+              visible: _selectedIndex == 1,
+              child: const Text("Status", style: TextStyle(fontFamily: 'PlusJakartaSans'))
+            ),
+
+            Visibility(
+              visible: _selectedIndex == 2,
+              child: const Text("Perfil", style: TextStyle(fontFamily: 'PlusJakartaSans'))
+            )
+
+            
+          ],
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              navegarParaPaginaListas();
-            },
-            icon: const Icon(Icons.format_list_numbered),
-          ),
+          
+          Visibility(
+            visible: _selectedIndex == 0,
+            child: IconButton(
+              onPressed: () {
+                navegarParaPaginaListas();
+              },
+              icon: const Icon(Icons.format_list_numbered),
+            ),
+          )
         ],
       ),
       body: IndexedStack(
@@ -178,6 +202,7 @@ class HomeState extends State<Home> {
         children: paginas,
       ),
       bottomNavigationBar: NavigationBar(
+        //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected, 
         backgroundColor: Theme.of(context).primaryColor,
         destinations: const [
           NavigationDestination(
