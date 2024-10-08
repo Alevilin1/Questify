@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class InfoAtributos extends StatelessWidget {
+  const InfoAtributos({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 600,
       child: Column(
         children: [
           Card(
-            margin: EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             elevation: 5,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -29,7 +31,7 @@ class InfoAtributos extends StatelessWidget {
                           'Força',
                           style: TextStyle(fontSize: 18),
                         ),
-                        const SizedBox(
+                        SizedBox(
                             height: 4), // Espaçamento entre o título e o texto
                         Text(
                           "Atividades que ajudam a aprimorar sua saúde e condicionamento físico",
@@ -44,7 +46,7 @@ class InfoAtributos extends StatelessWidget {
             ),
           ),
           Card(
-            margin: EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             elevation: 5,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -64,7 +66,7 @@ class InfoAtributos extends StatelessWidget {
                           'Inteligência',
                           style: TextStyle(fontSize: 18),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           "Atividades que estimulam a mente e o raciocínio, como resolver problemas lógicos ou jogar xadrez.",
                           softWrap: true,
@@ -77,7 +79,7 @@ class InfoAtributos extends StatelessWidget {
             ),
           ),
           Card(
-            margin: EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             elevation: 5,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -97,7 +99,7 @@ class InfoAtributos extends StatelessWidget {
                           'Carisma',
                           style: TextStyle(fontSize: 18),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           "Atividades que promovem a melhoria da atratividade, como participar de eventos sociais e desenvolver habilidades de comunicação eficazes.",
                           softWrap: true,
@@ -114,7 +116,7 @@ class InfoAtributos extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Fechar"))
+              child: const Text("Fechar"))
         ],
       ),
     );

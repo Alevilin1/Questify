@@ -3,6 +3,8 @@ import 'package:flutter_quesfity/Serviços/autentificacao_servico.dart';
 import 'package:flutter_quesfity/main.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return LoginState();
@@ -11,7 +13,7 @@ class Login extends StatefulWidget {
 
 class LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  AutentificacaoServico _authServico = AutentificacaoServico();
+  final AutentificacaoServico _authServico = AutentificacaoServico();
   TextEditingController senhaControler = TextEditingController();
   TextEditingController emailControler = TextEditingController();
   TextEditingController nomeControler = TextEditingController();
@@ -150,14 +152,14 @@ class LoginState extends State<Login> {
         _authServico.loginUsuario(
             email: emailControler.text, senha: senhaControler.text);
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => RoteadorTela()));
+            MaterialPageRoute(builder: (context) => const RoteadorTela()));
       } else {
         _authServico.cadastrarUsuario(
             email: emailControler.text,
             senha: senhaControler.text,
             nome: nomeControler.text);
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => RoteadorTela()));
+            MaterialPageRoute(builder: (context) => const RoteadorTela()));
       }
     }
   }

@@ -12,7 +12,7 @@ class CriarTarefa extends StatefulWidget {
   List<Tarefas> listaDeTarefas;
   User user;
 
-  CriarTarefa({required this.listaDeTarefas, required this.user});
+  CriarTarefa({super.key, required this.listaDeTarefas, required this.user});
 
   @override
   State<StatefulWidget> createState() {
@@ -55,6 +55,7 @@ class CriarTarefaState extends State<CriarTarefa> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -101,12 +102,13 @@ class CriarTarefaState extends State<CriarTarefa> {
         child: ListView(
           children: [
             Container(
+              width: screenSize.width * 0.9,
               decoration: BoxDecoration(
                 color: Theme.of(context).secondaryHeaderColor,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(screenSize.width * 0.02),
                 child: Column(
                   children: [
                     Column(

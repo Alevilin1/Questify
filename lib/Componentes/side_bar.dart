@@ -5,16 +5,18 @@ import 'package:flutter_quesfity/main.dart';
 
 
 class SideBar extends StatelessWidget {
+  const SideBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF1E1E1E),
       child: Column(
         children: [
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
-            color: Color(0xFF1E1E1E),
+            color: const Color(0xFF1E1E1E),
             child: const Text(
               "Menu",
               style: TextStyle(fontSize: 24),

@@ -4,7 +4,7 @@ import 'package:flutter_quesfity/Modelos/user.dart';
 
 class StatusPagina extends StatefulWidget {
   User user;
-  StatusPagina({required this.user});
+  StatusPagina({super.key, required this.user});
 
   @override
   State<StatefulWidget> createState() {

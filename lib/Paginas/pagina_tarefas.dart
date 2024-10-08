@@ -5,19 +5,18 @@ import 'package:intl/intl.dart';
 import 'package:flutter_quesfity/criar_tarefas.dart';
 import 'package:flutter_quesfity/Modelos/tarefas.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
-import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class PrimeiraPagina extends StatefulWidget {
-  User user;
-  PrimeiraPagina({required this.user});
+  final User user;
+  const PrimeiraPagina({super.key, required this.user});
 
   @override
-  _PrimeiraPaginaState createState() => _PrimeiraPaginaState();
+  PrimeiraPaginaState createState() => PrimeiraPaginaState();
 }
 
-class _PrimeiraPaginaState extends State<PrimeiraPagina> {
+class PrimeiraPaginaState extends State<PrimeiraPagina> {
   bool? confirmacaoTarefa = false;
   List<Tarefas> listaDeTarefas = [];
   List<String> filtrosSelecionados = [];
@@ -93,7 +92,8 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
       }
 
       while (widget.user.xp >= widget.user.xpNivel()) {
-        widget.user.xp -= widget.user.xpNivel(); // Remove XP para o proximo nivel
+        widget.user.xp -=
+            widget.user.xpNivel(); // Remove XP para o proximo nivel
         widget.user.nivel++; // Aumenta o nível do usuário
 
         showDialog(
@@ -101,9 +101,12 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
             builder: (context) {
               return Levelup(user: widget.user); // Mostra o level up
             });
+
+       
       }
 
-      widget.user.tarefasConcluidas++; // Aumenta o contador de tarefas concluidas
+      widget
+          .user.tarefasConcluidas++; // Aumenta o contador de tarefas concluidas
       widget.user.salvar(); // Salva o XP e o nível do usuário
     });
   }
@@ -142,14 +145,15 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
               ),
             ),
             const SizedBox(height: 24),
-            Container(
+            SizedBox(
               height: 40,
               child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: widget.user.filtros.map((filtros) {
                     return Padding(
                       padding: const EdgeInsets.only(
-                          left: 8), //Espacamento entre os filtros
+                        left: 8,
+                      ), //Espacamento entre os filtros
                       child: FilterChip(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
@@ -174,15 +178,17 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                     );
                   }).toList()),
             ),
-            const SizedBox(height: 24),
+            listaDeTarefas.isEmpty ? const SizedBox() : const SizedBox(height: 24),
             Expanded(
               child: Scaffold(
                 // Tela de tarefas
                 floatingActionButton: FloatingActionButton(
                   elevation: 5,
+                  backgroundColor: Theme.of(context)
+                      .floatingActionButtonTheme
+                      .backgroundColor,
                   shape: const CircleBorder(),
-                  backgroundColor: Colors.white,
-                  child: const Icon(Icons.add, color: Colors.black),
+                  child: const Icon(Icons.add),
                   onPressed: () async {
                     final resultado = await Navigator.push(
                       context,
@@ -200,7 +206,7 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                     }
                   },
                 ),
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).primaryColor,
                 body: listaDeTarefas.isEmpty
                     ? const Center(
                         child: Row(
@@ -208,15 +214,14 @@ class _PrimeiraPaginaState extends State<PrimeiraPagina> {
                           children: [
                             Icon(
                               Icons.search,
-                              color: Colors.white,
                               size: 32,
                             ),
                             SizedBox(width: 8),
                             Text(
                               "Nenhuma tarefa encontrada.",
                               style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  color: Colors.white),
+                                fontFamily: 'PlusJakartaSans',
+                              ),
                             ),
                           ],
                         ),

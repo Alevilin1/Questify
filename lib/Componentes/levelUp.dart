@@ -3,7 +3,7 @@ import 'package:flutter_quesfity/Modelos/user.dart';
 
 class Levelup extends StatelessWidget {
   final User user;
-  Levelup({required this.user});
+  const Levelup({super.key, required this.user});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

@@ -4,7 +4,7 @@ import 'package:flutter_quesfity/Modelos/user.dart';
 
 class Progressao extends StatefulWidget {
   final User user;
-  Progressao({required this.user});
+  const Progressao({super.key, required this.user});
   @override
   ProgressaoState createState() => ProgressaoState();
 }
@@ -25,7 +25,7 @@ class ProgressaoState extends State<Progressao> {
       builder: (context, double value, child) {
         return LinearCappedProgressIndicator(
           minHeight: 10,
-          color: const Color(0xFFFFFFFF),
+          color: Theme.of(context).sliderTheme.activeTrackColor,
           backgroundColor: const Color(0xFFCCCCCC),
           value: value,
         );

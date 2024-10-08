@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class EscolherImportancia extends StatefulWidget {
   final Function(double) onXPChanged; //Funcão que receberá o valor do slide
 
-  EscolherImportancia({required this.onXPChanged});
+  const EscolherImportancia({super.key, required this.onXPChanged});
   @override
   State<StatefulWidget> createState() {
     return EscolherImportanciaState();

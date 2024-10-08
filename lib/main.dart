@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Autentificacao/autentificacao.dart';
+import 'package:flutter_quesfity/Paginas/pagina_categorias.dart';
 import 'package:flutter_quesfity/Paginas/pagina_filtros.dart';
 import 'package:flutter_quesfity/Componentes/side_bar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/Paginas/pagina_tarefas.dart';
 import 'package:flutter_quesfity/Paginas/pagina_testes.dart';
-import 'package:flutter_quesfity/Paginas/status_pagina.dart';
+import 'package:flutter_quesfity/Paginas/pagina_status.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -30,8 +31,16 @@ class Main extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: Colors.white,
         fontFamily: 'PlusJakartaSans',
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+        ),
         textTheme: Theme.of(context).textTheme.apply(
-          fontFamily: 'PlusJakartaSans',
+              fontFamily: 'PlusJakartaSans',
+              bodyColor: Colors.black,
+            ),
+        sliderTheme: const SliderThemeData(
+          activeTrackColor: Colors.black,
         ),
         secondaryHeaderColor: Colors.grey[200],
         appBarTheme: const AppBarTheme(
@@ -43,10 +52,16 @@ class Main extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: const Color(0xFF000000),
         secondaryHeaderColor: const Color(0xFF1E1E1E),
-        textTheme: Theme.of(context).textTheme.apply(
-            fontFamily: 'PlusJakartaSans',
-            bodyColor: Colors.white
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
         ),
+        sliderTheme: const SliderThemeData(
+          activeTrackColor: Colors.white,
+        ),
+        textTheme: Theme.of(context)
+            .textTheme
+            .apply(fontFamily: 'PlusJakartaSans', bodyColor: Colors.white),
       ),
       themeMode: ThemeMode.dark,
       home: const RoteadorTela(),
@@ -81,6 +96,7 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   int _selectedIndex = 0;
   User user = User(id: "");
+  bool isloading = true;
 
   void _onItemSelected(int index) {
     setState(() {
@@ -107,14 +123,18 @@ class HomeState extends State<Home> {
         await user.salvar();
       }
 
-      setState(() {}); // Atualiza a interface
+      setState(() {
+        isloading = false;
+      }); // Atualiza a interface
     } else {
       // Aqui você pode lidar com o caso em que não há usuário autenticado
       print("Nenhum usuário autenticado.");
+      isloading = false;
     }
   }
 
-  void navegarParaPaginaListas() async { // Navega para a pagina de listas
+  void navegarParaPaginaListas() async {
+    // Navega para a pagina de listas
     final updatedUser = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -122,7 +142,8 @@ class HomeState extends State<Home> {
       ),
     );
 
-    if (updatedUser != null) {  // Caso o usuário tenha sido atualizado
+    if (updatedUser != null) {
+      // Caso o usuário tenha sido atualizado
       setState(() {
         user = updatedUser; // Atualiza o usuário
       });
@@ -144,7 +165,8 @@ class HomeState extends State<Home> {
       StatusPagina(
         user: user,
       ),
-      TestePagina(),
+      //TestePagina(),
+      const PaginaCategorias()
     ];
 
     return Scaffold(
@@ -162,30 +184,23 @@ class HomeState extends State<Home> {
         ),
         title: Row(
           children: [
-
             Visibility(
-            visible: _selectedIndex == 0,
-            child: const Text(
-              "Tarefas",
-              style: TextStyle(fontFamily: 'PlusJakartaSans'),
-            )
-            ),
-
+                visible: _selectedIndex == 0,
+                child: const Text(
+                  "Tarefas",
+                  style: TextStyle(fontFamily: 'PlusJakartaSans'),
+                )),
             Visibility(
-              visible: _selectedIndex == 1,
-              child: const Text("Status", style: TextStyle(fontFamily: 'PlusJakartaSans'))
-            ),
-
+                visible: _selectedIndex == 1,
+                child: const Text("Status",
+                    style: TextStyle(fontFamily: 'PlusJakartaSans'))),
             Visibility(
-              visible: _selectedIndex == 2,
-              child: const Text("Perfil", style: TextStyle(fontFamily: 'PlusJakartaSans'))
-            )
-
-            
+                visible: _selectedIndex == 2,
+                child: const Text("Perfil",
+                    style: TextStyle(fontFamily: 'PlusJakartaSans')))
           ],
         ),
         actions: [
-          
           Visibility(
             visible: _selectedIndex == 0,
             child: IconButton(
@@ -197,29 +212,41 @@ class HomeState extends State<Home> {
           )
         ],
       ),
-      body: IndexedStack(
+      body: isloading ? const Center(child: CircularProgressIndicator()) :  IndexedStack(
         index: _selectedIndex,
         children: paginas,
       ),
-      bottomNavigationBar: NavigationBar(
-        //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected, 
-        backgroundColor: Theme.of(context).primaryColor,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.task),
-            label: 'Tarefas',
+      bottomNavigationBar: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Divider(
+            height: 1,
+            thickness: 1,
+            indent: 0,
+            endIndent: 0,
           ),
-          NavigationDestination(
-            icon: Icon(Icons.trending_up_rounded),
-            label: 'Status',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Perfil',
+          NavigationBar(
+            //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            backgroundColor: Theme.of(context).primaryColor,
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.task),
+                label: 'Tarefas',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.trending_up_rounded),
+                label: 'Status',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person),
+                label: 'Perfil',
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: _onItemSelected,
           ),
         ],
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemSelected,
       ),
     );
   }

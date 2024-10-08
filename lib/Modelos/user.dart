@@ -37,7 +37,9 @@ class User {
               'Pessoal',
               'Estudo'
             ], // Inicializando os filtros padrao
-        nivel = nivel ?? 1; // Inicializando o nivel padrao
+        nivel = nivel ?? 1;
+
+  get conquistas => null; // Inicializando o nivel padrao
 
   //Salvando os dados do usuario
   Future<void> salvar() async {

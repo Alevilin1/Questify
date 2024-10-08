@@ -2,11 +2,14 @@ import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
 
 class TestePagina extends StatefulWidget {
+  const TestePagina({super.key});
+
   @override
   _TestePaginaState createState() => _TestePaginaState();
 }
 
 class _TestePaginaState extends State<TestePagina> {
+  double barraProgresso = 0;
   double xp = 0;
   double progresso = 0;
   bool animar = true;
@@ -14,7 +17,7 @@ class _TestePaginaState extends State<TestePagina> {
   verificacaoXP() {
     if (xp >= 1) {
       setState(() {
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           xp -= xp;
           animar = false;
           setState(() {});
@@ -48,10 +51,6 @@ class _TestePaginaState extends State<TestePagina> {
               if (!animar) {
                 animar = true;
               }
-
-               xp += 0.25;
-
-              
             },
           ),
           IconButton(
@@ -60,7 +59,28 @@ class _TestePaginaState extends State<TestePagina> {
                 setState(() {});
                 verificacaoXP();
               },
-              icon: Icon(Icons.add))
+              icon: const Icon(Icons.add)),
+          AnimatedRotation(
+            turns: barraProgresso / 100,
+            duration: const Duration(seconds: 1),
+            child:
+                const Icon(Icons.light_mode, size: 100, color: Colors.orange),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Slider(
+                value: barraProgresso, // Valor na interface do usuario
+                min: 0,
+                max: 100,
+                activeColor: Colors.orange,
+                onChanged: (double value) {
+                  // Quando o valor do slide for alterado
+                  setState(() {
+                    barraProgresso = value;
+                    xp = value / 100;
+                  });
+                }),
+          )
         ],
       ),
     );
