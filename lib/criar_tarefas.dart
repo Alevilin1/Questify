@@ -131,6 +131,12 @@ class CriarTarefaState extends State<CriarTarefa> {
                           child: TextFormField(
                             controller: tituloControler,
                             decoration: _inputDecoration("Título"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, digite um título';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         const SizedBox(height: 25),

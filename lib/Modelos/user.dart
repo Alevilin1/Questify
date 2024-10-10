@@ -87,6 +87,7 @@ class Usuario {
 
     if (snapshot.exists) {
       var data = snapshot.data();
+      
       /*List<Conquista> conquistasCarregadas = [];
 
       // Carrega as conquistas do usuário
