@@ -1,14 +1,19 @@
 import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quesfity/Modelos/conquista.dart';
+import 'package:flutter_quesfity/Modelos/user.dart';
+
 
 class TestePagina extends StatefulWidget {
-  const TestePagina({super.key});
+  final Usuario user;
+  final List<Conquista> conquistas;
+  const TestePagina({super.key, required this.user, required this.conquistas});
 
   @override
-  _TestePaginaState createState() => _TestePaginaState();
+  TestePaginaState createState() => TestePaginaState();
 }
 
-class _TestePaginaState extends State<TestePagina> {
+class TestePaginaState extends State<TestePagina> {
   double barraProgresso = 0;
   double xp = 0;
   double progresso = 0;
@@ -80,8 +85,20 @@ class _TestePaginaState extends State<TestePagina> {
                     xp = value / 100;
                   });
                 }),
-          )
-        ],
+          ),
+          ListView(
+              shrinkWrap: true,
+              children: widget.conquistas.map((conquista) {
+                return ListTile(
+                  title: Text(conquista.nome),
+                  trailing: conquista.desbloqueado
+                      ? const Icon(Icons.check)
+                      : const Icon(Icons.block),
+                  subtitle: Text(conquista.idFuncao),
+                );
+              }).toList()),
+
+        ],       
       ),
     );
   }

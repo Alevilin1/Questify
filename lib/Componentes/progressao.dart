@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 
 class Progressao extends StatefulWidget {
-  final User user;
+  final Usuario user;
   const Progressao({super.key, required this.user});
   @override
   ProgressaoState createState() => ProgressaoState();

@@ -1,4 +1,3 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/atributos.dart';
 import 'package:flutter_quesfity/Componentes/dificuldade.dart';
@@ -10,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 // ignore: must_be_immutable
 class CriarTarefa extends StatefulWidget {
   List<Tarefas> listaDeTarefas;
-  User user;
+  Usuario user;
 
   CriarTarefa({super.key, required this.listaDeTarefas, required this.user});
 
@@ -104,7 +103,7 @@ class CriarTarefaState extends State<CriarTarefa> {
             Container(
               width: screenSize.width * 0.9,
               decoration: BoxDecoration(
-                color: Theme.of(context).secondaryHeaderColor,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Padding(

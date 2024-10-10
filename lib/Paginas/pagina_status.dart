@@ -3,8 +3,8 @@ import 'package:flutter_quesfity/Componentes/progressao.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 
 class StatusPagina extends StatefulWidget {
-  User user;
-  StatusPagina({super.key, required this.user});
+  final Usuario user;
+  const StatusPagina({super.key, required this.user});
 
   @override
   State<StatefulWidget> createState() {

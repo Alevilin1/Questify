@@ -52,13 +52,14 @@ class EscolherDificuldadeState extends State<EscolherDificuldade> {
             //Slider para escolher a dificuldade
             value: valorSlide, //Valor na interface do usuario
             activeColor: Colors.orange,
-            inactiveColor: Colors.white24,
-            thumbColor: Colors.white,
+            inactiveColor: Theme.of(context).sliderTheme.inactiveTrackColor,
+            thumbColor: Theme.of(context).sliderTheme.thumbColor,
             min: 0, //Define o valor minimo
             max: 3, //Define o valor maximo
             divisions: 3, //Define o número de divisões
             label: valorSlide.round().toString(), //Define o texto do slide
-            onChanged: (double value) { //Quando o valor do slide for alterado
+            onChanged: (double value) {
+              //Quando o valor do slide for alterado
               setState(() {
                 valorSlide = value;
                 updateXpDificuldade(value); //Atualiza o xp da tarefa

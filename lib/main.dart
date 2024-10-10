@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'package:achievement_view/achievement_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Autentificacao/autentificacao.dart';
-import 'package:flutter_quesfity/Paginas/pagina_categorias.dart';
+import 'package:flutter_quesfity/Modelos/conquista.dart';
+import 'package:flutter_quesfity/Paginas/pagina_conquistas.dart';
 import 'package:flutter_quesfity/Paginas/pagina_filtros.dart';
 import 'package:flutter_quesfity/Componentes/side_bar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
@@ -10,6 +14,7 @@ import 'package:flutter_quesfity/Paginas/pagina_testes.dart';
 import 'package:flutter_quesfity/Paginas/pagina_status.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +34,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Colors.white,
+        primaryColor: const Color(0xFFF7F7F7),
         fontFamily: 'PlusJakartaSans',
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.black,
@@ -41,28 +46,36 @@ class Main extends StatelessWidget {
             ),
         sliderTheme: const SliderThemeData(
           activeTrackColor: Colors.black,
+          inactiveTickMarkColor: Colors.grey,
+          thumbColor: Colors.grey,
         ),
         secondaryHeaderColor: Colors.grey[200],
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
         ),
+        cardColor: Colors.white,
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: const Color(0xFF000000),
-        secondaryHeaderColor: const Color(0xFF1E1E1E),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-        ),
-        sliderTheme: const SliderThemeData(
-          activeTrackColor: Colors.white,
-        ),
-        textTheme: Theme.of(context)
-            .textTheme
-            .apply(fontFamily: 'PlusJakartaSans', bodyColor: Colors.white),
-      ),
+          brightness: Brightness.dark,
+          primaryColor: const Color(0xFF000000),
+          secondaryHeaderColor: const Color(0xFF1E1E1E),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+          ),
+          sliderTheme: const SliderThemeData(
+            activeTrackColor: Colors.white,
+            inactiveTickMarkColor: Colors.white24,
+            thumbColor: Colors.white,
+          ),
+          textTheme: Theme.of(context)
+              .textTheme
+              .apply(fontFamily: 'PlusJakartaSans', bodyColor: Colors.white),
+          cardColor: const Color(0xFF1E1E1E),
+          navigationBarTheme: const NavigationBarThemeData(
+            backgroundColor: Color(0xFF323335),
+          )),
       themeMode: ThemeMode.dark,
       home: const RoteadorTela(),
     );
@@ -80,7 +93,7 @@ class RoteadorTela extends StatelessWidget {
           if (snapshot.hasData) {
             return const Home();
           } else {
-            return Login();
+            return const Login();
           }
         });
   }
@@ -95,13 +108,34 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   int _selectedIndex = 0;
-  User user = User(id: "");
+  Usuario user = Usuario(id: "");
   bool isloading = true;
+
+  List<Conquista> listaDeConquistas = [
+    Conquista(
+      nome: "Iniciante",
+      descricao: "Conclua sua primeira tarefa",
+      idFuncao: "funcao1",
+      quantidadeDesbloqueio: 1,
+      desbloqueado: false,
+      icone: Icons.email,
+    ),
+    Conquista(
+      nome: "Testando",
+      descricao: "Teste funções duplas",
+      idFuncao: "funcao1",
+      quantidadeDesbloqueio: 3,
+      desbloqueado: false,
+      icone: Icons.emoji_events,
+    ),
+  ];
+
+  //List<Conquista> listaDeConquistasDesbloqueadas = [];
 
   void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index; // Atualiza o index
-      print(_selectedIndex);
+      //print(_selectedIndex);
     });
   }
 
@@ -112,24 +146,62 @@ class HomeState extends State<Home> {
     if (firebaseUser != null) {
       // Usando o uid do Firebase Auth
       String userId = firebaseUser.uid;
-      User? usuarioCarregado =
-          await User.carregar(userId); // Carregando o usuário
+      Usuario? usuarioCarregado =
+          await Usuario.carregar(userId); // Carregando o usuário
 
       if (usuarioCarregado != null) {
+        // Se o usuário foi carregado
         // Caso o usuário tenha sido carregado
-        user = usuarioCarregado; // Usando o usuário carregado'
+        user = usuarioCarregado; // Usando o usuário carregado
       } else {
-        user = User(id: userId); // Cria um novo usuário
-        await user.salvar();
+        // Caso o usuário não tenha sido carregado
+        user = Usuario(id: userId); // Cria um novo usuário
+        await user.salvar(); // Cria o usuário
+        await user.salvarConquistas(listaDeConquistas); // Cria as conquistas
       }
 
       setState(() {
         isloading = false;
       }); // Atualiza a interface
     } else {
-      // Aqui você pode lidar com o caso em que não há usuário autenticado
-      print("Nenhum usuário autenticado.");
+      //print("Nenhum usuário autenticado.");
       isloading = false;
+    }
+  }
+
+  Future<void> _carregarConquistas() async {
+    final firebaseUser = firebase_auth
+        .FirebaseAuth.instance.currentUser; // Usando o uid do Firebase Auth
+
+    if (firebaseUser != null) {
+      String userId = firebaseUser.uid; // Usando o uid do usuário autenticado
+
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance // Busca as conquistas do usuário
+              .collection('users')
+              .doc(userId)
+              .collection('conquistas')
+              .orderBy('createdAt', descending: true) // Ordem decrescente, pode dar problema.
+              .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Se o usuário tem conquistas, carrega as conquistas
+        setState(() {
+          listaDeConquistas = snapshot.docs.map((doc) {
+            int codePoints = doc['icone'];
+            IconData icon = IconData(codePoints, fontFamily: 'MaterialIcons');
+            return Conquista(
+              nome: doc['nome'],
+              descricao: doc['descricao'],
+              idFuncao: doc['idFuncao'],
+              desbloqueado: doc['desbloqueado'],
+              id: doc.id,
+              quantidadeDesbloqueio: doc['quantidadeDesbloqueio'],
+              icone: icon,
+            );
+          }).toList();
+        });
+      } else {}
     }
   }
 
@@ -150,14 +222,87 @@ class HomeState extends State<Home> {
     }
   }
 
+  void show(Conquista conquista) {
+    // Exibe o desbloqueio da conquista na interface
+    AchievementView(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      textStyleTitle: TextStyle(
+        color: Theme.of(context).textTheme.bodyLarge!.color,
+      ),
+      textStyleSubTitle: TextStyle(
+        color: Theme.of(context).textTheme.bodyLarge!.color,
+      ),
+      alignment: const AlignmentDirectional(0, 0.8),
+      elevation: 5,
+      isCircle: true,
+      icon: const FaIcon(
+        FontAwesomeIcons.trophy,
+        color: Colors.green,
+      ),
+      title: conquista.nome,
+      subTitle: conquista.descricao,
+    ).show(context);
+
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     _carregarUsuario(); // Carregando o usuário
+    _carregarConquistas(); // Carregando as conquistas
   }
 
   @override
   Widget build(BuildContext context) {
+    Map<String, Function(Conquista conquista)> funcoesConquista = {
+      // Funções das conquistas
+      'funcao1': (Conquista conquista) {
+        if (user.tarefasConcluidas >= conquista.quantidadeDesbloqueio &&
+            !conquista.desbloqueado) {
+          conquista.desbloqueado =
+              true; // Define o campo "desbloqueado" como true na lista
+
+          //print("O ID é " + conquista.id); Debug
+
+          conquista.atualizarConquista(user.id, conquista.id,
+              true); // Atualiza o campo "desbloqueado" no firebase
+
+          Future.delayed(const Duration(seconds: 1),
+              () => show(conquista)); // Exibe a conquista
+        }
+      },
+      'funcao2': (Conquista conquista) {
+        if (user.nivel >= 10 && !conquista.desbloqueado) {
+          conquista.desbloqueado = true;
+        }
+      },
+    };
+
+    void executarFuncaoConquista(Conquista conquista) {
+      // Executa as funções das conquistas
+      if(conquista.desbloqueado) return;
+
+      String idFuncao = conquista.idFuncao; // ID da função da conquista
+
+      if (funcoesConquista.containsKey(idFuncao)) {
+        // Verifica se a chave da conquista existe no Map
+        // Executa a função da chave associada à conquista
+        funcoesConquista[idFuncao]!(conquista);
+      } else {
+        // print("Função não encontrada para a conquista: ${conquista.nome}"); // Caso não exista, imprime uma mensagem de erro
+      }
+    }
+
+    // Cria um temporizador para executar a função a cada 1 segundo
+    Timer.periodic(const Duration(seconds: 1), (_) {
+      // Iterando a lista de conquistas
+      for (var conquista in listaDeConquistas) {
+        executarFuncaoConquista(
+            conquista); // passando as conquistas para a função
+      }
+    });
+
     final List<Widget> paginas = <Widget>[
       PrimeiraPagina(
         user: user,
@@ -165,12 +310,11 @@ class HomeState extends State<Home> {
       StatusPagina(
         user: user,
       ),
-      //TestePagina(),
-      const PaginaCategorias()
+      PaginaConquistas(listaDeConquistas: listaDeConquistas)
     ];
 
     return Scaffold(
-      drawer: SideBar(),
+      drawer: const SideBar(),
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -196,7 +340,7 @@ class HomeState extends State<Home> {
                     style: TextStyle(fontFamily: 'PlusJakartaSans'))),
             Visibility(
                 visible: _selectedIndex == 2,
-                child: const Text("Perfil",
+                child: const Text("Conquistas",
                     style: TextStyle(fontFamily: 'PlusJakartaSans')))
           ],
         ),
@@ -212,17 +356,19 @@ class HomeState extends State<Home> {
           )
         ],
       ),
-      body: isloading ? const Center(child: CircularProgressIndicator()) :  IndexedStack(
-        index: _selectedIndex,
-        children: paginas,
-      ),
+      body: isloading
+          ? const Center(child: CircularProgressIndicator())
+          : IndexedStack(
+              index: _selectedIndex,
+              children: paginas,
+            ),
       bottomNavigationBar: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
           const Divider(
-            height: 1,
-            thickness: 1,
+            height: 0.5,
+            thickness: 0.5,
             indent: 0,
             endIndent: 0,
           ),
@@ -231,7 +377,8 @@ class HomeState extends State<Home> {
             backgroundColor: Theme.of(context).primaryColor,
             destinations: const [
               NavigationDestination(
-                icon: Icon(Icons.task),
+                icon: Icon(Icons.check_circle),
+                selectedIcon: Icon(Icons.check_circle),
                 label: 'Tarefas',
               ),
               NavigationDestination(
@@ -239,8 +386,8 @@ class HomeState extends State<Home> {
                 label: 'Status',
               ),
               NavigationDestination(
-                icon: Icon(Icons.person),
-                label: 'Perfil',
+                icon: Icon(Icons.emoji_events),
+                label: 'Conquistas',
               ),
             ],
             selectedIndex: _selectedIndex,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Servi%C3%A7os/autentificacao_servico.dart';
-import 'package:flutter_quesfity/main.dart';
 
 
 

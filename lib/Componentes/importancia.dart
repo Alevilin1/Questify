@@ -53,8 +53,8 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
             //Slider para escolher a dificuldade
             value: valorSlide, //Valor na interface do usuario
             activeColor: Colors.orange,
-            inactiveColor: Colors.white24,
-            thumbColor: Colors.white,
+            inactiveColor: Theme.of(context).sliderTheme.inactiveTrackColor,
+            thumbColor: Theme.of(context).sliderTheme.thumbColor,
             min: 0, //Define o valor minimo
             max: 3, //Define o valor maximo
             divisions: 3, //Define o número de divisões

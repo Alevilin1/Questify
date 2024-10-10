@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 
 class Levelup extends StatelessWidget {
-  final User user;
+  final Usuario user;
   const Levelup({super.key, required this.user});
   @override
   Widget build(BuildContext context) {

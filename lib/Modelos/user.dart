@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_quesfity/Modelos/conquista.dart';
 
-class User {
+class Usuario {
   String id;
   double xp;
   int nivel;
@@ -11,7 +12,7 @@ class User {
   Map<String, dynamic> xpAtributos = {}; // xp dos atributos
   Map<String, dynamic> nivelAtributos = {}; // nivel dos atributos
 
-  User({
+  Usuario({
     required this.id,
     this.xp = 0,
     this.tarefasConcluidas = 0,
@@ -39,8 +40,6 @@ class User {
             ], // Inicializando os filtros padrao
         nivel = nivel ?? 1;
 
-  get conquistas => null; // Inicializando o nivel padrao
-
   //Salvando os dados do usuario
   Future<void> salvar() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -50,8 +49,28 @@ class User {
       'xpAtributos': xpAtributos,
       'nivelAtributos': nivelAtributos,
       'filtros': filtros,
-      'tarefasConcluidas': tarefasConcluidas
+      'tarefasConcluidas': tarefasConcluidas,
     });
+  }
+
+  Future<void> salvarConquistas(List<Conquista> conquistas) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    for (Conquista conquista in conquistas) {
+      DocumentReference docRef = await firestore
+          .collection('users')
+          .doc(id)
+          .collection('conquistas')
+          .add({
+        'nome': conquista.nome,
+        'descricao': conquista.descricao,
+        'desbloqueado': conquista.desbloqueado,
+        'idFuncao': conquista.idFuncao,
+        'quantidadeDesbloqueio': conquista.quantidadeDesbloqueio,
+        'icone': conquista.icone?.codePoint,
+        'createdAt': FieldValue.serverTimestamp(), // Adiciona o Timestamp ao criar
+      });
+      conquista.id = docRef.id;
+    }
   }
 
   // Atualiza os filtros
@@ -61,14 +80,32 @@ class User {
   }
 
   // Carrega os dados do usuário do Firestore
-  static Future<User?> carregar(String userId) async {
+  static Future<Usuario?> carregar(String userId) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await firestore.collection('users').doc(userId).get();
 
     if (snapshot.exists) {
       var data = snapshot.data();
-      return User(
+      /*List<Conquista> conquistasCarregadas = [];
+
+      // Carrega as conquistas do usuário
+      QuerySnapshot<Map<String, dynamic>> conquistasSnapshot = await firestore
+          .collection('users')
+          .doc(userId)
+          .collection('conquistas')
+          .get();
+
+      conquistasCarregadas = conquistasSnapshot.docs.map((doc) {
+        return Conquista(
+          nome: doc['nome'],
+          descricao: doc['descricao'],
+          idFuncao: doc['idFuncao'],
+          desbloqueado: doc['desbloqueado'],
+        );
+      }).toList();*/
+
+      return Usuario(
         id: userId,
         xp: data?['xp'] ?? 0,
         nivel: data?['nivel'] ?? 1,

@@ -43,8 +43,8 @@ class AtributosState extends State<Atributos> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Atributos'),
+                          return const AlertDialog(
+                            title: Text('Atributos'),
                             content: InfoAtributos(),                           
                           );
                         });

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 
 class PaginaListas extends StatefulWidget {
-  final User user;
+  final Usuario user;
   const PaginaListas({super.key, required this.user});
 
   @override
@@ -63,11 +63,13 @@ class PaginaListasState extends State<PaginaListas> {
             ),
             IconButton(
               onPressed: () {
-                widget.user.filtros.add(controller.text); // Adiciona o filtro na lista
+                widget.user.filtros
+                    .add(controller.text); // Adiciona o filtro na lista
 
                 widget.user.atualizarFiltro(); // Atualiza o banco de dados
 
-                Navigator.pop(context, widget.user); // Retorna para a pagina anterior
+                Navigator.pop(
+                    context, widget.user); // Retorna para a pagina anterior
               },
               icon: const Icon(Icons.send, size: 30),
             ),

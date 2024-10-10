@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/levelUp.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
+
 import 'package:intl/intl.dart';
 import 'package:flutter_quesfity/criar_tarefas.dart';
 import 'package:flutter_quesfity/Modelos/tarefas.dart';
@@ -9,8 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class PrimeiraPagina extends StatefulWidget {
-  final User user;
-  const PrimeiraPagina({super.key, required this.user});
+  final Usuario user;
+  const PrimeiraPagina(
+      {super.key, required this.user});
 
   @override
   PrimeiraPaginaState createState() => PrimeiraPaginaState();
@@ -101,8 +103,6 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
             builder: (context) {
               return Levelup(user: widget.user); // Mostra o level up
             });
-
-       
       }
 
       widget
@@ -110,6 +110,8 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
       widget.user.salvar(); // Salva o XP e o nível do usuário
     });
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +180,9 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                     );
                   }).toList()),
             ),
-            listaDeTarefas.isEmpty ? const SizedBox() : const SizedBox(height: 24),
+            listaDeTarefas.isEmpty
+                ? const SizedBox()
+                : const SizedBox(height: 24),
             Expanded(
               child: Scaffold(
                 // Tela de tarefas
@@ -239,7 +243,8 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                                       if (value != null) {
                                         setState(() {
                                           tarefa.tarefaConcluida = value;
-                                          concluirTarefa(tarefa);
+                                          concluirTarefa(
+                                              tarefa);
                                         });
                                       }
                                     }),

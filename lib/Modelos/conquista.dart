@@ -1,56 +1,49 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'user.dart';
+import 'package:flutter/material.dart';
 
 class Conquista {
-  String nome;
-  String descricao = "";
   String id;
-  IconData icone;
-  bool desbloqueado;
+  String nome;
+  String descricao;
+  final String idFuncao; // identificador da função associada
+  bool desbloqueado = false;
+  int quantidadeDesbloqueio;
+  IconData? icone;
 
   Conquista(
-      {required this.icone,
+      {this.id = '',
       required this.nome,
       required this.descricao,
-      this.id = '',
-      this.desbloqueado = false  
+      required this.idFuncao,
+      this.desbloqueado = false,
+      this.quantidadeDesbloqueio = 1,
+      this.icone
     });
 
-  Future<void> salvar(String categoriaId, String uid) async {
-    DocumentReference docRef = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('categorias')
-        .doc(categoriaId)
-        .collection('conquistas')
-        .add({'nome': nome, 'descricao': descricao, 'icone': icone.codePoint});
-
-    id = docRef.id;
+  void checarDesbloqueio() {
+    if (!desbloqueado) {
+      desbloqueado = true;
+      print('Conquista desbloqueada: $nome');
+    }
   }
 
-
-  void verificarDesbloqueioConquista(User user, int quantidadeTarefas, Conquista conquista, String categoriaId, String userId) async {
-   if(user.tarefasConcluidas >= quantidadeTarefas) {
-     desbloqueado = true;
-     await conquista.atualizar(categoriaId, userId);
-   }
-}
-
-   Future<void> atualizar(String categoriaId, String uid) async {
-    if (id.isNotEmpty) {
+  // Função para atualizar uma conquista específica do usuário
+  Future<void> atualizarConquista(
+      String userId, String conquistaId, bool desbloqueado) async {
+    try {
       await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('categorias')
-          .doc(categoriaId)
-          .collection('conquistas')
-          .doc(id)
+          .collection('users') // A coleção de usuários
+          .doc(userId) // O ID do usuário
+          .collection('conquistas') // A subcoleção de conquistas
+          .doc(conquistaId) // O id da conquista
           .update({
-        'desbloqueado': desbloqueado, // Atualizando o estado de desbloqueio
-      });
+        'desbloqueado': desbloqueado
+      }); // Atualiza o campo "desbloqueado"
+
+      print("Conquista atualizada com sucesso.");
+    } catch (e) {
+      print("Erro ao atualizar conquista: $e");
+      //print("Erro");
     }
   }
 }
-
