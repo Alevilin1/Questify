@@ -126,13 +126,29 @@ class HomeState extends State<Home> {
       idFuncao: "funcao1",
       quantidadeDesbloqueio: 1,
       desbloqueado: false,
-      icone: Icons.email,
+      icone: Icons.emoji_events,
     ),
     Conquista(
-      nome: "Testando",
-      descricao: "Teste funções duplas",
+      nome: "Iniciante Produtivo",
+      descricao: "Complete 5 tarefas",
       idFuncao: "funcao1",
-      quantidadeDesbloqueio: 3,
+      quantidadeDesbloqueio: 5,
+      desbloqueado: false,
+      icone: Icons.emoji_events,
+    ),
+    Conquista(
+      nome: "Produtividade em alta",
+      descricao: "Complete 20 tarefas",
+      idFuncao: "funcao1",
+      quantidadeDesbloqueio: 20,
+      desbloqueado: false,
+      icone: Icons.emoji_events,
+    ),
+    Conquista(
+      nome: "Aprendiz",
+      descricao: "Atinga o nivel 5",
+      idFuncao: "funcao2",
+      quantidadeDesbloqueio: 5,
       desbloqueado: false,
       icone: Icons.emoji_events,
     ),
@@ -190,7 +206,7 @@ class HomeState extends State<Home> {
           .doc(userId)
           .collection('conquistas')
           .orderBy('createdAt',
-              descending: true) // Ordem decrescente, pode dar problema.
+              descending: false) 
           .get();
 
       if (snapshot.docs.isNotEmpty) {
@@ -281,8 +297,15 @@ class HomeState extends State<Home> {
         }
       },
       'funcao2': (Conquista conquista) {
-        if (user.nivel >= 10 && !conquista.desbloqueado) {
+        if (user.nivel >= conquista.quantidadeDesbloqueio &&
+            !conquista.desbloqueado) {
           conquista.desbloqueado = true;
+
+          conquista.atualizarConquista(user.id, conquista.id,
+              true); // Atualiza o campo "desbloqueado" no firebase
+
+          Future.delayed(const Duration(seconds: 1),
+              () => show(conquista)); // Exibe a conquista
         }
       },
     };
@@ -321,92 +344,105 @@ class HomeState extends State<Home> {
       PaginaConquistas(listaDeConquistas: listaDeConquistas)
     ];
 
-    return Scaffold(
-      drawer: const SideBar(),
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: Builder(
-          builder: (BuildContext context) => IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: const Icon(Icons.menu),
-          ),
-        ),
-        title: Row(
-          children: [
-            Visibility(
-                visible: _selectedIndex == 0,
-                child: const Text(
-                  "Tarefas",
-                  style: TextStyle(fontFamily: 'PlusJakartaSans'),
-                )),
-            Visibility(
-                visible: _selectedIndex == 1,
-                child: const Text("Status",
-                    style: TextStyle(fontFamily: 'PlusJakartaSans'))),
-            Visibility(
-                visible: _selectedIndex == 2,
-                child: const Text("Conquistas",
-                    style: TextStyle(fontFamily: 'PlusJakartaSans')))
-          ],
-        ),
-        actions: [
-          Visibility(
-            visible: _selectedIndex == 0,
-            child: IconButton(
-              onPressed: () {
-                navegarParaPaginaListas();
-              },
-              icon: const Icon(Icons.format_list_numbered),
+    return isloading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            drawer: const SideBar(),
+            backgroundColor: Theme.of(context).primaryColor,
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).primaryColor,
+              leading: Builder(
+                builder: (BuildContext context) => IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  icon: const Icon(Icons.menu),
+                ),
+              ),
+              title: Row(
+                children: [
+                  Visibility(
+                      visible: _selectedIndex == 0,
+                      child: const Text(
+                        "Tarefas",
+                        style: TextStyle(fontFamily: 'PlusJakartaSans'),
+                      )),
+                  Visibility(
+                      visible: _selectedIndex == 1,
+                      child: const Text("Status",
+                          style: TextStyle(fontFamily: 'PlusJakartaSans'))),
+                  Visibility(
+                      visible: _selectedIndex == 2,
+                      child: const Text("Conquistas",
+                          style: TextStyle(fontFamily: 'PlusJakartaSans')))
+                ],
+              ),
+              actions: [
+                Visibility(
+                  visible: _selectedIndex == 0,
+                  child: IconButton(
+                    onPressed: () {
+                      navegarParaPaginaListas();
+                    },
+                    icon: const Icon(Icons.format_list_numbered),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-      body: isloading
-          ? const Center(child: CircularProgressIndicator())
-          : IndexedStack(
+            body: IndexedStack(
               index: _selectedIndex,
               children: paginas,
             ),
-      bottomNavigationBar: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /*const Divider(
+            bottomNavigationBar: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /*const Divider(
             height: 0.5,
             thickness: 0.5,
             indent: 0,
             endIndent: 0,
           ),*/
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: NavigationBar(
-              //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-              backgroundColor: Theme.of(context).secondaryHeaderColor,
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.check_circle),
-                  selectedIcon: Icon(Icons.check_circle),
-                  label: 'Tarefas',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.trending_up_rounded),
-                  label: 'Status',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.emoji_events),
-                  label: 'Conquistas',
+                ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
+                  child: NavigationBar(
+                    //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+                    backgroundColor: Theme.of(context).secondaryHeaderColor,
+                    destinations: const [
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.check_circle),
+                          selectedIcon: Icon(Icons.check_circle),
+                          label: 'Tarefas',
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.trending_up_rounded),
+                          label: 'Status',
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.emoji_events),
+                          label: 'Conquistas',
+                        ),
+                      ),
+                    ],
+                    selectedIndex: _selectedIndex, // Index selecionado
+                    onDestinationSelected:
+                        _onItemSelected, // Função ao selecionar
+                    height: 65, // Tamanho da navigator bar
+                    labelBehavior: // Só vai aparecer o texto sé estiver selecionado
+                        NavigationDestinationLabelBehavior.onlyShowSelected,
+                  ),
                 ),
               ],
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: _onItemSelected,
-              height: 65,
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

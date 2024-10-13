@@ -97,7 +97,6 @@ class TestePaginaState extends State<TestePagina> {
                   subtitle: Text(conquista.idFuncao),
                 );
               }).toList()),
-
         ],       
       ),
     );

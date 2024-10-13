@@ -129,4 +129,14 @@ class Usuario {
     return xp /
         xpNivel(); //Exemplo: xp: 20, xpnivel = 200, 20/200 = 0,1. 0,1 é 10% na barra de progresso
   }
+
+  int xpDosAtributos(String atributo) {
+    return nivelAtributos[atributo] * 100;
+  }
+
+  double progressaoDosAtributos(String atributo) {
+    //Mesmo processo da progressao do xp geral para os atributos
+    return xpAtributos[atributo] / xpDosAtributos(atributo);
+  }
+
 }

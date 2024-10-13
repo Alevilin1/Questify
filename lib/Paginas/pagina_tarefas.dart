@@ -11,8 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class PrimeiraPagina extends StatefulWidget {
   final Usuario user;
-  const PrimeiraPagina(
-      {super.key, required this.user});
+  const PrimeiraPagina({super.key, required this.user});
 
   @override
   PrimeiraPaginaState createState() => PrimeiraPaginaState();
@@ -93,6 +92,14 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         widget.user.xpAtributos['destreza'] += tarefa.xp / 2;
       }
 
+      while (widget.user.xpAtributos['forca'] >=
+          widget.user.xpDosAtributos('forca')) {
+        widget.user.xpAtributos['forca'] -= widget.user
+            .xpDosAtributos('forca'); // Remove XP para o proximo nivel
+        widget.user.nivelAtributos['forca']++; // Aumenta o nível do atributo
+        print("Subiu para o nivel ${widget.user.nivelAtributos['forca']}");
+      }
+
       while (widget.user.xp >= widget.user.xpNivel()) {
         widget.user.xp -=
             widget.user.xpNivel(); // Remove XP para o proximo nivel
@@ -110,8 +117,6 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
       widget.user.salvar(); // Salva o XP e o nível do usuário
     });
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -233,28 +238,40 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                     : ListView(
                         children: tarefasFiltradas.map((tarefa) {
                           return Card(
+                            color: Theme.of(context).cardColor,
+                            elevation: 6,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: ListTile(
-                              title: Text(tarefa.titulo),
-                              leading: SizedBox(
-                                width: 30,
-                                child: Checkbox(
-                                    value: tarefa.tarefaConcluida,
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          tarefa.tarefaConcluida = value;
-                                          concluirTarefa(
-                                              tarefa);
-                                        });
-                                      }
-                                    }),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              title: Text(
+                                tarefa.titulo,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              leading: Checkbox(
+                                value: tarefa.tarefaConcluida,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      tarefa.tarefaConcluida = value;
+                                      concluirTarefa(tarefa);
+                                    });
+                                  }
+                                },
                               ),
                               subtitle: tarefa.descricao.isNotEmpty
-                                  ? Text(tarefa.descricao)
+                                  ? Text(
+                                      tarefa.descricao,
+                                      style: const TextStyle(fontSize: 14),
+                                    )
                                   : null,
                               trailing: Text(
-                                "${tarefa.xp.toString()} XP",
-                                style: const TextStyle(fontSize: 14),
+                                "${tarefa.xp} XP",
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold),
                               ),
                             ),
                           );
@@ -266,15 +283,3 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         ));
   }
 }
-/*
-FilterChip(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  label: const Text(
-                    'Todos',
-                    style: TextStyle(fontFamily: 'PlusJakartaSans'),
-                  ),
-                  onSelected: null,
-                ),
-*/

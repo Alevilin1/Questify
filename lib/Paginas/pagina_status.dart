@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
+import 'package:flutter_quesfity/Componentes/progressao_atributos.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 
 class StatusPagina extends StatefulWidget {
@@ -25,7 +26,7 @@ class StatusPaginaState extends State<StatusPagina> {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                color: const Color(0xFF141118),
+                color: Theme.of(context).secondaryHeaderColor,
               ),
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -59,8 +60,49 @@ class StatusPaginaState extends State<StatusPagina> {
                 ],
               ),
             ),
-            Text("Força LV${widget.user.nivelAtributos['forca']}",
-                style: const TextStyle(fontSize: 24)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(8.0)),
+                    ),
+                    width: double.infinity,
+                    child: Text("Atributos",
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                        )),
+                  ),
+                  Container(
+                      width: double.infinity,
+                      color: Theme.of(context).secondaryHeaderColor,
+                      child: Row(
+                        children: [
+                          Text(
+                            "Força",
+                            style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .color,
+                                fontSize: 16),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                              child: ProgressaoAtributos(user: widget.user))
+                        ],
+                      ))
+                ],
+              ),
+            ),
           ],
         ),
       ),
