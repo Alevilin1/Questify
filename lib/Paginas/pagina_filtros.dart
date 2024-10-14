@@ -15,6 +15,7 @@ class PaginaListasState extends State<PaginaListas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -23,31 +24,34 @@ class PaginaListasState extends State<PaginaListas> {
           style: TextStyle(fontFamily: 'PlusJakartaSans'),
         ),
       ),
-      body: Column(
-        children: [
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: widget.user.filtros.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(widget.user.filtros[index]),
-                trailing: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        widget.user.filtros
-                            .removeAt(index); // Remove o filtro da lista
-
-                        widget.user
-                            .atualizarFiltro(); //Remove o filtro do banco de dados
-
-                        Navigator.pop(context, widget.user);
-                      });
-                    },
-                    icon: const Icon(Icons.delete)),
-              );
-            },
-          ),
-        ],
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: widget.user.filtros.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(widget.user.filtros[index]),
+                  trailing: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          widget.user.filtros
+                              .removeAt(index); // Remove o filtro da lista
+        
+                          widget.user
+                              .atualizarFiltro(); //Remove o filtro do banco de dados
+        
+                          Navigator.pop(context, widget.user);
+                        });
+                      },
+                      icon: const Icon(Icons.delete)),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).primaryColor,

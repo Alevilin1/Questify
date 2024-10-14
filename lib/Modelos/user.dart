@@ -24,13 +24,13 @@ class Usuario {
             {
               'forca': 0,
               'inteligencia': 0,
-              'destreza': 0,
+              'carisma': 0,
             },
         nivelAtributos = nivelAtributos ?? // Inicializando os valores do nivel
             {
               'forca': 1,
               'inteligencia': 1,
-              'destreza': 1,
+              'carisma': 1,
             },
         filtros = filtros ??
             [

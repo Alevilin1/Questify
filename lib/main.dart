@@ -200,14 +200,13 @@ class HomeState extends State<Home> {
     if (firebaseUser != null) {
       String userId = firebaseUser.uid; // Usando o uid do usuário autenticado
 
-      QuerySnapshot snapshot = await FirebaseFirestore
-          .instance // Busca as conquistas do usuário
-          .collection('users')
-          .doc(userId)
-          .collection('conquistas')
-          .orderBy('createdAt',
-              descending: false) 
-          .get();
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance // Busca as conquistas do usuário
+              .collection('users')
+              .doc(userId)
+              .collection('conquistas')
+              .orderBy('createdAt', descending: false)
+              .get();
 
       if (snapshot.docs.isNotEmpty) {
         // Se o usuário tem conquistas, carrega as conquistas
@@ -249,7 +248,7 @@ class HomeState extends State<Home> {
   void show(Conquista conquista) {
     // Exibe o desbloqueio da conquista na interface
     AchievementView(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme.of(context).cardColor,
       textStyleTitle: TextStyle(
         color: Theme.of(context).textTheme.bodyLarge!.color,
       ),
@@ -345,7 +344,10 @@ class HomeState extends State<Home> {
     ];
 
     return isloading
-        ? const Center(child: CircularProgressIndicator())
+        ? Container(
+            alignment: Alignment.center,
+            color: Theme.of(context).primaryColor,
+            child: const CircularProgressIndicator())
         : Scaffold(
             drawer: const SideBar(),
             backgroundColor: Theme.of(context).primaryColor,
@@ -437,8 +439,8 @@ class HomeState extends State<Home> {
                     onDestinationSelected:
                         _onItemSelected, // Função ao selecionar
                     height: 65, // Tamanho da navigator bar
-                    labelBehavior: // Só vai aparecer o texto sé estiver selecionado
-                        NavigationDestinationLabelBehavior.onlyShowSelected,
+                    /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
+                        NavigationDestinationLabelBehavior.onlyShowSelected,*/
                   ),
                 ),
               ],

@@ -19,7 +19,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
         title: Text(conquistas.nome),
         subtitle: Text(conquistas.descricao),
         leading: Icon(conquistas.icone),
-        trailing: conquistas.desbloqueado ? const Icon(Icons.check_circle, color: Colors.green,) : Icon(Icons.block),
+        trailing: conquistas.desbloqueado ? const Icon(Icons.check_circle, color: Colors.green,) : const Icon(Icons.block),
       );
     }).toList()));
   }

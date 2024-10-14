@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Componentes/levelUp.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
 
 import 'package:intl/intl.dart';
@@ -97,7 +96,6 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         widget.user.xpAtributos['forca'] -= widget.user
             .xpDosAtributos('forca'); // Remove XP para o proximo nivel
         widget.user.nivelAtributos['forca']++; // Aumenta o nível do atributo
-        print("Subiu para o nivel ${widget.user.nivelAtributos['forca']}");
       }
 
       while (widget.user.xp >= widget.user.xpNivel()) {
@@ -105,11 +103,6 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
             widget.user.xpNivel(); // Remove XP para o proximo nivel
         widget.user.nivel++; // Aumenta o nível do usuário
 
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Levelup(user: widget.user); // Mostra o level up
-            });
       }
 
       widget
