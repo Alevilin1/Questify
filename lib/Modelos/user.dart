@@ -6,7 +6,6 @@ class Usuario {
   double xp;
   int nivel;
   int tarefasConcluidas;
-
   List<dynamic> filtros; // Lista de filtros
 
   Map<String, dynamic> xpAtributos = {}; // xp dos atributos
@@ -67,7 +66,8 @@ class Usuario {
         'idFuncao': conquista.idFuncao,
         'quantidadeDesbloqueio': conquista.quantidadeDesbloqueio,
         'icone': conquista.icone?.codePoint,
-        'createdAt': FieldValue.serverTimestamp(), // Adiciona o Timestamp ao criar
+        'createdAt':
+            FieldValue.serverTimestamp(), // Adiciona o Timestamp ao criar
       });
       conquista.id = docRef.id;
     }
@@ -87,7 +87,7 @@ class Usuario {
 
     if (snapshot.exists) {
       var data = snapshot.data();
-      
+
       /*List<Conquista> conquistasCarregadas = [];
 
       // Carrega as conquistas do usuário
@@ -138,5 +138,4 @@ class Usuario {
     //Mesmo processo da progressao do xp geral para os atributos
     return xpAtributos[atributo] / xpDosAtributos(atributo);
   }
-
 }

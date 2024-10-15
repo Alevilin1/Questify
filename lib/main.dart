@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:achievement_view/achievement_view.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_quesfity/Paginas/pagina_status.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,6 +120,7 @@ class HomeState extends State<Home> {
   int _selectedIndex = 0;
   Usuario user = Usuario(id: "");
   bool isloading = true;
+  AudioPlayer audioPlayer = AudioPlayer();
 
   List<Conquista> listaDeConquistas = [
     Conquista(
@@ -246,6 +249,9 @@ class HomeState extends State<Home> {
   }
 
   void show(Conquista conquista) {
+    //Tocando o som de desbloqueio
+    audioPlayer.play(AssetSource('mixkit-software-interface-start-2574.wav'));
+
     // Exibe o desbloqueio da conquista na interface
     AchievementView(
       color: Theme.of(context).cardColor,
@@ -341,6 +347,7 @@ class HomeState extends State<Home> {
         user: user,
       ),
       PaginaConquistas(listaDeConquistas: listaDeConquistas)
+      //TestePagina(user: user, conquistas: listaDeConquistas)
     ];
 
     return isloading
