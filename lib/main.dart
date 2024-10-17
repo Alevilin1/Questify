@@ -17,6 +17,7 @@ import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -412,44 +413,45 @@ class HomeState extends State<Home> {
             indent: 0,
             endIndent: 0,
           ),*/
-                ClipRRect(
+                /*ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(20)),
-                  child: NavigationBar(
-                    //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-                    backgroundColor: Theme.of(context).secondaryHeaderColor,
-                    destinations: const [
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: NavigationDestination(
-                          icon: Icon(Icons.check_circle),
-                          selectedIcon: Icon(Icons.check_circle),
-                          label: 'Tarefas',
-                        ),
+                  child:*/
+                NavigationBar(
+                  //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+                  backgroundColor: Theme.of(context).secondaryHeaderColor,
+                  destinations: const [
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: NavigationDestination(
+                        icon: Icon(Icons.check_circle),
+                        selectedIcon: Icon(Icons.check_circle),
+                        label: 'Tarefas',
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: NavigationDestination(
-                          icon: Icon(Icons.trending_up_rounded),
-                          label: 'Status',
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: NavigationDestination(
+                        icon: Icon(Icons.trending_up_rounded),
+                        label: 'Status',
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: NavigationDestination(
-                          icon: Icon(Icons.emoji_events),
-                          label: 'Conquistas',
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: NavigationDestination(
+                        icon: Icon(Icons.emoji_events),
+                        label: 'Conquistas',
                       ),
-                    ],
-                    selectedIndex: _selectedIndex, // Index selecionado
-                    onDestinationSelected:
-                        _onItemSelected, // Função ao selecionar
-                    height: 65, // Tamanho da navigator bar
-                    /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex, // Index selecionado
+                  onDestinationSelected:
+                      _onItemSelected, // Função ao selecionar
+                  height: 65, // Tamanho da navigator bar
+                  /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
                         NavigationDestinationLabelBehavior.onlyShowSelected,*/
-                  ),
                 ),
+                //),
               ],
             ),
           );

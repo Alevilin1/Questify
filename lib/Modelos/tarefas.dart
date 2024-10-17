@@ -35,6 +35,7 @@ class Tarefas {
       'xp': xp,
       'atributos': atributos,
       'filtroTarefa': filtroTarefa,
+      'createdAt': FieldValue.serverTimestamp(), // Adiciona o Timestamp ao criar
     });
     id = docRef.id;
   }

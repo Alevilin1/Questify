@@ -42,6 +42,7 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
           .collection('users')
           .doc(userId)
           .collection('tarefas')
+          .orderBy('createdAt', descending: true)
           .get();
 
       setState(() {

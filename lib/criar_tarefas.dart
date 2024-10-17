@@ -86,7 +86,7 @@ class CriarTarefaState extends State<CriarTarefa> {
                 await novaTarefa.salvar(userId);
 
                 setState(() {
-                  widget.listaDeTarefas.add(novaTarefa);
+                  widget.listaDeTarefas.insert(0, novaTarefa); // Inserindo a nova tarefa na lista no index 0
                 });
 
                 // Depois de criar a tarefa, volta para a página principal
