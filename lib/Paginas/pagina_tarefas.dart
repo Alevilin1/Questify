@@ -7,6 +7,7 @@ import 'package:flutter_quesfity/Modelos/tarefas.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:vibration/vibration.dart';
 
 class PrimeiraPagina extends StatefulWidget {
   final Usuario user;
@@ -103,7 +104,6 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         widget.user.xp -=
             widget.user.xpNivel(); // Remove XP para o proximo nivel
         widget.user.nivel++; // Aumenta o nível do usuário
-
       }
 
       widget
@@ -247,12 +247,18 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                               ),
                               leading: Checkbox(
                                 value: tarefa.tarefaConcluida,
-                                onChanged: (value) {
+                                onChanged: (value) async {
                                   if (value != null) {
                                     setState(() {
                                       tarefa.tarefaConcluida = value;
                                       concluirTarefa(tarefa);
                                     });
+
+                                     if (await Vibration.hasVibrator() != null) {
+                                      // Verifica se o dispositivo possui Vibrador
+                                      await Vibration.vibrate(duration: 100);
+                                    }
+
                                   }
                                 },
                               ),

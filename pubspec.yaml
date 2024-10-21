@@ -28,6 +28,7 @@ dependencies:
   font_awesome_flutter: '>= 4.7.0'
   achievement_view: ^1.0.1
   audioplayers: ^1.0.1
+  vibration: ^1.8.4
 
   
 

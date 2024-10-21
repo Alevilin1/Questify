@@ -10,15 +10,16 @@ class Conquista {
   int quantidadeDesbloqueio;
   IconData? icone;
 
-  Conquista(
-      {this.id = '',
+  Conquista
+  ({  
+      this.id = '',
       required this.nome,
       required this.descricao,
       required this.idFuncao,
       this.desbloqueado = false,
       this.quantidadeDesbloqueio = 1,
       this.icone
-    });
+  });
 
   void checarDesbloqueio() {
     if (!desbloqueado) {
@@ -46,4 +47,8 @@ class Conquista {
       //print("Erro");
     }
   }
+
+/* double progressaoDaConquista() {
+    return (quantidadeConquistada / quantidadeDesbloqueio) * 100;
+  }*/
 }

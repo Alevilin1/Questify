@@ -12,15 +12,19 @@ class PaginaConquistas extends StatefulWidget {
 class _PaginaConquistasState extends State<PaginaConquistas> {
   @override
   Widget build(BuildContext context) {
-    return Placeholder(
-        child: Column(
-            children: widget.listaDeConquistas.map((conquistas) {
+    return Column(
+        children: widget.listaDeConquistas.map((conquistas) {
       return ListTile(
         title: Text(conquistas.nome),
         subtitle: Text(conquistas.descricao),
-        leading: Icon(conquistas.icone),
-        trailing: conquistas.desbloqueado ? const Icon(Icons.check_circle, color: Colors.green,) : const Icon(Icons.block),
+        leading: Icon(conquistas.icone, size: 28, color: conquistas.desbloqueado ? Colors.green : Colors.white),
+        trailing: conquistas.desbloqueado
+            ? const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+              )
+            : const Icon(Icons.block),
       );
-    }).toList()));
+    }).toList());
   }
 }

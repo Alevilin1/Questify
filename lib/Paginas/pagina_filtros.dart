@@ -67,7 +67,7 @@ class PaginaListasState extends State<PaginaListas> {
                       return 'Por favor, digite um filtro';
                     }
 
-                    for (var filtro in widget.user.filtros) {
+                    for (var filtro in widget.user.filtros) { // Percorre a lista de filtros
                       if (value == filtro) { // Se o filtro já existir
                         return 'Este filtro ja existe'; // Retorna um erro
                       }

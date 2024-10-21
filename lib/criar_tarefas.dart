@@ -29,6 +29,7 @@ class CriarTarefaState extends State<CriarTarefa> {
   double xpImportanciaTarefa = 0;
   double xpAtributos = 0;
   String filtroSelecionado = '';
+  bool jaCliquei = false;
 
   List<bool> atributosSelecionados = [false, false, false];
 
@@ -68,29 +69,34 @@ class CriarTarefaState extends State<CriarTarefa> {
         actions: [
           IconButton(
             onPressed: () async {
-            if(_formKey.currentState!.validate()) {
-              final firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
+              if (jaCliquei == false) {
+                jaCliquei = true;
+                if (_formKey.currentState!.validate()) {
+                  final firebaseUser =
+                      firebase_auth.FirebaseAuth.instance.currentUser;
 
-              if (firebaseUser != null) {
-                String userId = firebaseUser.uid;
+                  if (firebaseUser != null) {
+                    String userId = firebaseUser.uid;
 
-                Tarefas novaTarefa = Tarefas(
-                  titulo: tituloControler.text,
-                  descricao: descricaoControler.text,
-                  xp: xpCriacaoTarefa(),
-                  atributos: atributosSelecionados,
-                  filtroTarefa: filtroSelecionado,
-                );
+                    Tarefas novaTarefa = Tarefas(
+                      titulo: tituloControler.text,
+                      descricao: descricaoControler.text,
+                      xp: xpCriacaoTarefa(),
+                      atributos: atributosSelecionados,
+                      filtroTarefa: filtroSelecionado,
+                    );
 
-                // Salvando a tarefa no Firestore
-                await novaTarefa.salvar(userId);
+                    // Salvando a tarefa no Firestore
+                    await novaTarefa.salvar(userId);
 
-                setState(() {
-                  widget.listaDeTarefas.insert(0, novaTarefa); // Inserindo a nova tarefa na lista no index 0
-                });
+                    setState(() {
+                      widget.listaDeTarefas.insert(0,
+                          novaTarefa); // Inserindo a nova tarefa na lista no index 0
+                    });
 
-                // Depois de criar a tarefa, volta para a página principal
-                Navigator.pop(context, widget.listaDeTarefas);
+                    // Depois de criar a tarefa, volta para a página principal
+                    Navigator.pop(context, widget.listaDeTarefas);
+                  }
                 }
               }
             },
@@ -183,7 +189,7 @@ class CriarTarefaState extends State<CriarTarefa> {
                                 setState(() {
                                   filtroSelecionado = selectedValue.toString();
                                 });
-        
+
                                 //print(selectedValue);
                               },
                             ),

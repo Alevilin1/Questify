@@ -36,7 +36,7 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-          statusBarColor: Color(0xFF322F35), // Cor da barra de status
+          //statusBarColor: Color.fromARGB(255, 210, 190, 230), // Cor da barra de status
           statusBarIconBrightness: Brightness.light, // Ícones claros
           systemNavigationBarColor: Color(0xFF1E1E1E)),
     );
@@ -68,8 +68,8 @@ class Main extends StatelessWidget {
       ),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
-          primaryColor:
-              const Color.fromARGB(255, 24, 23, 23), //const Color(0xFF000000)
+          primaryColor: const Color.fromARGB(255, 24, 23,
+              23), //const Color(0xFF000000) const Color.fromARGB(255, 24, 23, 23)
           secondaryHeaderColor: const Color(0xFF1E1E1E),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: Colors.white,
@@ -87,7 +87,7 @@ class Main extends StatelessWidget {
           navigationBarTheme: const NavigationBarThemeData(
             backgroundColor: Color(0xFF323335),
           )),
-      themeMode: ThemeMode.dark,
+      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
       home: const RoteadorTela(),
     );
   }
@@ -123,6 +123,7 @@ class HomeState extends State<Home> {
   bool isloading = true;
   AudioPlayer audioPlayer = AudioPlayer();
 
+  //List<Conquista> listaDeConquistasDesbloqueadas = [];
   List<Conquista> listaDeConquistas = [
     Conquista(
       nome: "Iniciante",
@@ -157,8 +158,6 @@ class HomeState extends State<Home> {
       icone: Icons.emoji_events,
     ),
   ];
-
-  //List<Conquista> listaDeConquistasDesbloqueadas = [];
 
   void _onItemSelected(int index) {
     setState(() {
@@ -413,45 +412,44 @@ class HomeState extends State<Home> {
             indent: 0,
             endIndent: 0,
           ),*/
-                /*ClipRRect(
+                ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(20)),
-                  child:*/
-                NavigationBar(
-                  //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-                  backgroundColor: Theme.of(context).secondaryHeaderColor,
-                  destinations: const [
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: NavigationDestination(
-                        icon: Icon(Icons.check_circle),
-                        selectedIcon: Icon(Icons.check_circle),
-                        label: 'Tarefas',
+                  child: NavigationBar(
+                    //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+                    backgroundColor: Theme.of(context).secondaryHeaderColor,
+                    destinations: const [
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.check_circle),
+                          selectedIcon: Icon(Icons.check_circle),
+                          label: 'Tarefas',
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: NavigationDestination(
-                        icon: Icon(Icons.trending_up_rounded),
-                        label: 'Status',
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.trending_up_rounded),
+                          label: 'Status',
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: NavigationDestination(
-                        icon: Icon(Icons.emoji_events),
-                        label: 'Conquistas',
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.emoji_events),
+                          label: 'Conquistas',
+                        ),
                       ),
-                    ),
-                  ],
-                  selectedIndex: _selectedIndex, // Index selecionado
-                  onDestinationSelected:
-                      _onItemSelected, // Função ao selecionar
-                  height: 65, // Tamanho da navigator bar
-                  /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
+                    ],
+                    selectedIndex: _selectedIndex, // Index selecionado
+                    onDestinationSelected:
+                        _onItemSelected, // Função ao selecionar
+                    height: 65, // Tamanho da navigator bar
+                    /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
                         NavigationDestinationLabelBehavior.onlyShowSelected,*/
+                  ),
                 ),
-                //),
               ],
             ),
           );
