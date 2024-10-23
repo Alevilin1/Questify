@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
-
 import 'package:intl/intl.dart';
 import 'package:flutter_quesfity/criar_tarefas.dart';
 import 'package:flutter_quesfity/Modelos/tarefas.dart';
@@ -76,6 +75,8 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
   void concluirTarefa(Tarefas tarefa) async {
     await tarefa.deletarTarefa(widget.user.id, tarefa); // Deleta a tarefa
 
+    await Future.delayed(const Duration(milliseconds: 500));
+
     setState(() {
       tarefa.tarefaConcluida = true; // Conclui a tarefa
       listaDeTarefas.remove(tarefa); // Remove a tarefa da lista
@@ -90,7 +91,7 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         widget.user.xpAtributos['inteligencia'] += tarefa.xp / 2;
       }
       if (tarefa.atributos[2]) {
-        widget.user.xpAtributos['destreza'] += tarefa.xp / 2;
+        widget.user.xpAtributos['carisma'] += tarefa.xp / 2;
       }
 
       while (widget.user.xpAtributos['forca'] >=
@@ -98,6 +99,21 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         widget.user.xpAtributos['forca'] -= widget.user
             .xpDosAtributos('forca'); // Remove XP para o proximo nivel
         widget.user.nivelAtributos['forca']++; // Aumenta o nível do atributo
+      }
+
+      while (widget.user.xpAtributos['inteligencia'] >=
+          widget.user.xpDosAtributos('inteligencia')) {
+        widget.user.xpAtributos['inteligencia'] -= widget.user
+            .xpDosAtributos('inteligencia'); // Remove XP para o proximo nivel
+        widget.user
+            .nivelAtributos['inteligencia']++; // Aumenta o nivel do atributo
+      }
+
+      while (widget.user.xpAtributos['carisma'] >=
+          widget.user.xpDosAtributos('carisma')) {
+        widget.user.xpAtributos['carisma'] -= widget.user
+            .xpDosAtributos('carisma'); // Remove XP para o proximo nivel
+        widget.user.nivelAtributos['carisma']++; // Aumenta o nível do atributo
       }
 
       while (widget.user.xp >= widget.user.xpNivel()) {
@@ -254,11 +270,10 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                                       concluirTarefa(tarefa);
                                     });
 
-                                     if (await Vibration.hasVibrator() != null) {
+                                    if (await Vibration.hasVibrator() != null) {
                                       // Verifica se o dispositivo possui Vibrador
                                       await Vibration.vibrate(duration: 100);
                                     }
-
                                   }
                                 },
                               ),

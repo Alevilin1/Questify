@@ -16,8 +16,8 @@ import 'package:flutter_quesfity/Paginas/pagina_status.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:intl/intl.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,6 +122,7 @@ class HomeState extends State<Home> {
   Usuario user = Usuario(id: "");
   bool isloading = true;
   AudioPlayer audioPlayer = AudioPlayer();
+  bool estaMostrandoConquista = false;
 
   //List<Conquista> listaDeConquistasDesbloqueadas = [];
   List<Conquista> listaDeConquistas = [
@@ -132,7 +133,7 @@ class HomeState extends State<Home> {
       quantidadeDesbloqueio: 1,
       desbloqueado: false,
       icone: Icons.emoji_events,
-    ),
+    ),  
     Conquista(
       nome: "Iniciante Produtivo",
       descricao: "Complete 5 tarefas",
@@ -248,7 +249,15 @@ class HomeState extends State<Home> {
     }
   }
 
-  void show(Conquista conquista) {
+  void show(Conquista conquista) async {
+    
+    while (estaMostrandoConquista) {
+      // Enquanto estiver mostrando uma conquista
+      await Future.delayed(const Duration(milliseconds: 500)); // Aguarde para mostrar outra conquista, se tiver
+    }
+
+    estaMostrandoConquista = true; // Define que a conquista está sendo mostrada
+
     //Tocando o som de desbloqueio
     audioPlayer.play(AssetSource('mixkit-software-interface-start-2574.wav'));
 
@@ -271,6 +280,11 @@ class HomeState extends State<Home> {
       title: conquista.nome,
       subTitle: conquista.descricao,
     ).show(context);
+
+    Future.delayed(const Duration(seconds: 6), () {
+      //Espera acabar o desbloqueio
+      estaMostrandoConquista = false; // Define que a conquista não está sendo mostrada para mostrar a outra conquista
+    });
 
     setState(() {});
   }
