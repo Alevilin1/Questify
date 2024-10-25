@@ -202,12 +202,13 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
               child: Scaffold(
                 // Tela de tarefas
                 floatingActionButton: FloatingActionButton(
+                  // Botaão de adicionar tarefas
                   elevation: 5,
                   backgroundColor: Theme.of(context)
                       .floatingActionButtonTheme
                       .backgroundColor,
                   shape: const CircleBorder(),
-                  child: const Icon(Icons.add),
+                  child: const Icon(Icons.add, size: 28),
                   onPressed: () async {
                     final resultado = await Navigator.push(
                       context,
@@ -262,9 +263,10 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               leading: Checkbox(
+                                activeColor: Colors.white,
                                 value: tarefa.tarefaConcluida,
                                 onChanged: (value) async {
-                                  if (value != null) {
+                                  if (value != null && value == true) {
                                     setState(() {
                                       tarefa.tarefaConcluida = value;
                                       concluirTarefa(tarefa);

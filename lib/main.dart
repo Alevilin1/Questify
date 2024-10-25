@@ -34,12 +34,12 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-          //statusBarColor: Color.fromARGB(255, 210, 190, 230), // Cor da barra de status
-          statusBarIconBrightness: Brightness.light, // Ícones claros
-          systemNavigationBarColor: Color(0xFF1E1E1E)),
-    );
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            //statusBarColor: Color.fromARGB(255, 210, 190, 230), // Cor da barra de status
+            statusBarIconBrightness: Brightness.light, // Ícones claros
+            systemNavigationBarColor: Color.fromARGB(255, 24, 23,
+                23)) //Color(0xFF1E1E1E)), // Cor da barra de navegação
+        );
 
     return MaterialApp(
       theme: ThemeData(
@@ -133,7 +133,7 @@ class HomeState extends State<Home> {
       quantidadeDesbloqueio: 1,
       desbloqueado: false,
       icone: Icons.emoji_events,
-    ),  
+    ),
     Conquista(
       nome: "Iniciante Produtivo",
       descricao: "Complete 5 tarefas",
@@ -250,10 +250,10 @@ class HomeState extends State<Home> {
   }
 
   void show(Conquista conquista) async {
-    
     while (estaMostrandoConquista) {
       // Enquanto estiver mostrando uma conquista
-      await Future.delayed(const Duration(milliseconds: 500)); // Aguarde para mostrar outra conquista, se tiver
+      await Future.delayed(const Duration(
+          milliseconds: 500)); // Aguarde para mostrar outra conquista, se tiver
     }
 
     estaMostrandoConquista = true; // Define que a conquista está sendo mostrada
@@ -283,7 +283,8 @@ class HomeState extends State<Home> {
 
     Future.delayed(const Duration(seconds: 6), () {
       //Espera acabar o desbloqueio
-      estaMostrandoConquista = false; // Define que a conquista não está sendo mostrada para mostrar a outra conquista
+      estaMostrandoConquista =
+          false; // Define que a conquista não está sendo mostrada para mostrar a outra conquista
     });
 
     setState(() {});
@@ -420,50 +421,60 @@ class HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                /*const Divider(
-            height: 0.5,
-            thickness: 0.5,
-            indent: 0,
-            endIndent: 0,
-          ),*/
-                ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(20)),
-                  child: NavigationBar(
-                    //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-                    backgroundColor: Theme.of(context).secondaryHeaderColor,
-                    destinations: const [
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: NavigationDestination(
-                          icon: Icon(Icons.check_circle),
-                          selectedIcon: Icon(Icons.check_circle),
-                          label: 'Tarefas',
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: NavigationDestination(
-                          icon: Icon(Icons.trending_up_rounded),
-                          label: 'Status',
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: NavigationDestination(
-                          icon: Icon(Icons.emoji_events),
-                          label: 'Conquistas',
-                        ),
-                      ),
-                    ],
-                    selectedIndex: _selectedIndex, // Index selecionado
-                    onDestinationSelected:
-                        _onItemSelected, // Função ao selecionar
-                    height: 65, // Tamanho da navigator bar
-                    /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
-                        NavigationDestinationLabelBehavior.onlyShowSelected,*/
-                  ),
+                const Divider(
+                  height: 0.5,
+                  thickness: 0.2,
+                  indent: 0,
+                  endIndent: 0,
+                  color: Colors.white,
                 ),
+                /*ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),*/
+                NavigationBar(
+                  //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  destinations: [
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: NavigationDestination(
+                        icon: Icon(Icons.check_box, 
+                            color: _selectedIndex == 0 ? Colors.white : Colors.grey),
+                        //selectedIcon: Icon(Icons.check_box),
+                        label: 'Tarefas',
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: NavigationDestination(
+                        icon: Icon(
+                          Icons.trending_up_rounded,
+                          color:
+                              _selectedIndex == 1 ? Colors.white : Colors.grey,
+                        ),
+                        label: 'Status',
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: NavigationDestination(
+                        icon: Icon(Icons.emoji_events, 
+                            color: _selectedIndex == 2 ? Colors.white : Colors.grey),
+                        label: 'Conquistas',
+                      ),
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex, // Index selecionado
+                  indicatorColor: Colors.transparent,
+
+                  onDestinationSelected:
+                      _onItemSelected, // Função ao selecionar
+                  height: 65, // Tamanho da navigator bar
+                  /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
+                        NavigationDestinationLabelBehavior.onlyShowSelected,*/
+                  elevation: 5,
+                ),
+                //),
               ],
             ),
           );
