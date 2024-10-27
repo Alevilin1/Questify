@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/conquista.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 
-
 class TestePagina extends StatefulWidget {
   final Usuario user;
   final List<Conquista> conquistas;
@@ -86,6 +85,18 @@ class TestePaginaState extends State<TestePagina> {
                   });
                 }),
           ),
+          /*IconButton(
+            onPressed: () {
+              showAlertBanner(
+                  context,
+                  () {},
+                  alertBannerLocation: AlertBannerLocation.bottom,
+                  safeAreaBottomEnabled: false,
+                  safeAreaLeftEnabled: false,
+                  const Text("Alerta"));
+            },
+            icon: const Icon(Icons.safety_check),
+          ),*/
           ListView(
               shrinkWrap: true,
               children: widget.conquistas.map((conquista) {
@@ -97,7 +108,7 @@ class TestePaginaState extends State<TestePagina> {
                   subtitle: Text(conquista.idFuncao),
                 );
               }).toList()),
-        ],       
+        ],
       ),
     );
   }

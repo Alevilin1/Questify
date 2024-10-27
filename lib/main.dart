@@ -13,6 +13,7 @@ import 'package:flutter_quesfity/Componentes/side_bar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/Paginas/pagina_tarefas.dart';
 import 'package:flutter_quesfity/Paginas/pagina_status.dart';
+import 'package:flutter_quesfity/Paginas/pagina_testes.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -421,14 +422,14 @@ class HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Divider(
+                /*const Divider(
                   height: 0.5,
                   thickness: 0.2,
                   indent: 0,
                   endIndent: 0,
                   color: Colors.white,
                 ),
-                /*ClipRRect(
+                ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(20)),*/
                 NavigationBar(
@@ -436,16 +437,18 @@ class HomeState extends State<Home> {
                   backgroundColor: Theme.of(context).primaryColor,
                   destinations: [
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: NavigationDestination(
-                        icon: Icon(Icons.check_box, 
-                            color: _selectedIndex == 0 ? Colors.white : Colors.grey),
+                        icon: Icon(Icons.check_circle,
+                            color: _selectedIndex == 0
+                                ? Colors.white
+                                : Colors.grey),
                         //selectedIcon: Icon(Icons.check_box),
                         label: 'Tarefas',
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: NavigationDestination(
                         icon: Icon(
                           Icons.trending_up_rounded,
@@ -456,17 +459,17 @@ class HomeState extends State<Home> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: NavigationDestination(
-                        icon: Icon(Icons.emoji_events, 
-                            color: _selectedIndex == 2 ? Colors.white : Colors.grey),
+                        icon: Icon(Icons.emoji_events,
+                            color: _selectedIndex == 2
+                                ? Colors.white
+                                : Colors.grey),
                         label: 'Conquistas',
                       ),
                     ),
                   ],
                   selectedIndex: _selectedIndex, // Index selecionado
-                  indicatorColor: Colors.transparent,
-
                   onDestinationSelected:
                       _onItemSelected, // Função ao selecionar
                   height: 65, // Tamanho da navigator bar
