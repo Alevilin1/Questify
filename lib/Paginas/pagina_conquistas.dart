@@ -29,7 +29,8 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
     }
   */
   Set<int> filtragem = {0};
-  List<Conquista> filtrarConquistasDesbloqueadas() {
+  List<Conquista> filtrarConquistas() {
+
     if (filtragem.contains(0)) return widget.listaDeConquistas;
 
     if (filtragem.contains(1)) {
@@ -49,7 +50,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
 
   @override
   Widget build(BuildContext context) {
-    final conquistasDesbloqueadas = filtrarConquistasDesbloqueadas();
+    final conquistasDesbloqueadas = filtrarConquistas();
 
     widget.listaDeConquistas.sort((a, b) {
       if (a.desbloqueado && !b.desbloqueado) {
