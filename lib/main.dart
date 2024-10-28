@@ -35,12 +35,13 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-            //statusBarColor: Color.fromARGB(255, 210, 190, 230), // Cor da barra de status
-            statusBarIconBrightness: Brightness.light, // Ícones claros
-            systemNavigationBarColor: Color.fromARGB(255, 24, 23,
-                23)) //Color(0xFF1E1E1E)), // Cor da barra de navegação
-        );
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+          //statusBarColor: Color.fromARGB(255, 210, 190, 230), // Cor da barra de status
+          statusBarIconBrightness: Brightness.light, // Ícones claros
+          systemNavigationBarColor: Color(
+              0xFF1E1E1E)), // Cor da barra de navegação //Color.fromARGB(255, 24, 23,23))
+    );
 
     return MaterialApp(
       theme: ThemeData(
@@ -124,6 +125,7 @@ class HomeState extends State<Home> {
   bool isloading = true;
   AudioPlayer audioPlayer = AudioPlayer();
   bool estaMostrandoConquista = false;
+
 
   //List<Conquista> listaDeConquistasDesbloqueadas = [];
   List<Conquista> listaDeConquistas = [
@@ -434,7 +436,7 @@ class HomeState extends State<Home> {
                       const BorderRadius.vertical(top: Radius.circular(20)),*/
                 NavigationBar(
                   //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).secondaryHeaderColor,
                   destinations: [
                     Padding(
                       padding: const EdgeInsets.all(8),

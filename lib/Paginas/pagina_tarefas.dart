@@ -155,7 +155,8 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
               children: [
                 Text(
                   DateFormat.MMMMEEEEd().format(DateTime.now()),
-                  style: const TextStyle(fontFamily: 'PlusJakartaSans'),
+                  style: const TextStyle(
+                      fontFamily: 'PlusJakartaSans', fontSize: 15),
                 ),
                 Text(
                   "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()}",
@@ -172,6 +173,7 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                 return Padding(
                   padding: const EdgeInsets.only(left: 8),
                   child: FilterChip(
+                    elevation: 5,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -226,13 +228,28 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
               backgroundColor: Theme.of(context).primaryColor,
               body: listaDeTarefas.isEmpty
                   ? const Center(
-                      child: Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.search, size: 32),
-                          SizedBox(width: 8),
+                          Icon(Icons.search, size: 64),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              //Icon(Icons.search, size: 32),
+                              //SizedBox(width: 8),
+                              Text(
+                                "Sem tarefas",
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 24,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
                           Text(
-                            "Nenhuma tarefa encontrada.",
+                            "Toque no botão + para criar uma tarefa.",
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
                             ),
@@ -300,107 +317,3 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
     );
   }
 }
-
-
-/*
-
-Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.8),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Nível ${widget.user.nivel}',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'PlusJakartaSans',
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          DateFormat.MMMMEEEEd().format(DateTime.now()),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()} XP",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Progressao(user: widget.user),
-              ],
-            ),
-          ),
-*/
-
-
-/*
-
- Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Seu nivel é: ${widget.user.nivel}',
-              style: const TextStyle(
-                fontSize: 15,
-                fontFamily: 'PlusJakartaSans',
-              ),
-            ),
-          ),
-          Progressao(user: widget.user), // Barra de progresso de XP
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  DateFormat.MMMMEEEEd().format(DateTime.now()),
-                  style: const TextStyle(fontFamily: 'PlusJakartaSans'),
-                ),
-                Text(
-                  "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()}",
-                ),
-              ],
-            ),
-          ),
-  */

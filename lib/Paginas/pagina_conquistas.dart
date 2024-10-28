@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/conquista.dart';
 
@@ -10,15 +11,55 @@ class PaginaConquistas extends StatefulWidget {
 }
 
 class _PaginaConquistasState extends State<PaginaConquistas> {
+  /*late List<Conquista> conquistasDesbloqueadas;
+  late List<Conquista> conquistasBloqueadas;
+
+
+  @override
+  void initState() {
+    super.initState();
+    filtrarConquistasDesbloqueadas();
+    filtrarConquistasBloqueadas();
+  }
+
+     void filtrarConquistasBloqueadas() {
+    conquistasBloqueadas = widget.listaDeConquistas
+        .where((conquista) => !conquista.desbloqueado)
+        .toList();
+    }
+  */
+  bool mostrarTodasAsConquistas = true;
+  List<Conquista> filtrarConquistasDesbloqueadas() {
+
+    if (mostrarTodasAsConquistas) return widget.listaDeConquistas;
+
+    return widget.listaDeConquistas
+        .where((conquista) => conquista.desbloqueado)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final conquistasDesbloqueadas = filtrarConquistasDesbloqueadas();
+
+    widget.listaDeConquistas.sort((a, b) {
+      if (a.desbloqueado && !b.desbloqueado) {
+        return -1; // Se conquista A estiver desbloqueada e B estiver bloqueada retorna -1
+      }
+      if (!a.desbloqueado && b.desbloqueado) {
+        return 1; // Se conquista B estiver desbloqueada e A estiver bloqueada retorna 1
+      }
+      return 0; // Se as duas conquistas estiverem bloqueadas ou desbloqueadas, não faz nada
+    });
+    // Organiza as conquistas por desbloqueio
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: widget.listaDeConquistas.length, // Quantidade de conquistas
-        itemBuilder: (context, index) { // Itera sobre as conquistas
-          final conquista = widget.listaDeConquistas[index];
+        itemCount: conquistasDesbloqueadas.length, // Quantidade de conquistas
+        itemBuilder: (context, index) {
+          // Itera sobre as conquistas
+          final conquista = conquistasDesbloqueadas[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Card(
@@ -38,12 +79,15 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
-                  leading: Container( // Icone da conquista
+                  leading: Container(
+                    // Icone da conquista
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: conquista.desbloqueado
-                          ? Colors.green.shade300.withOpacity(0.3) // Cor do icone da conquista desbloqueada
-                          : Colors.grey.shade600.withOpacity(0.3), // Cor do icone da conquista bloqueada
+                          ? Colors.green.shade300.withOpacity(
+                              0.3) // Cor do icone da conquista desbloqueada
+                          : Colors.grey.shade600.withOpacity(
+                              0.3), // Cor do icone da conquista bloqueada
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -80,6 +124,14 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            mostrarTodasAsConquistas = !mostrarTodasAsConquistas;
+          });
+        },
+        child: Icon(mostrarTodasAsConquistas ? Icons.lock_open : Icons.lock),
       ),
     );
   }
