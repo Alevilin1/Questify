@@ -28,14 +28,23 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
         .toList();
     }
   */
-  bool mostrarTodasAsConquistas = true;
+  Set<int> filtragem = {0};
   List<Conquista> filtrarConquistasDesbloqueadas() {
+    if (filtragem.contains(0)) return widget.listaDeConquistas;
 
-    if (mostrarTodasAsConquistas) return widget.listaDeConquistas;
+    if (filtragem.contains(1)) {
+      return widget.listaDeConquistas
+          .where((conquista) => !conquista.desbloqueado)
+          .toList();
+    }
 
-    return widget.listaDeConquistas
-        .where((conquista) => conquista.desbloqueado)
-        .toList();
+    if (filtragem.contains(2)) {
+      return widget.listaDeConquistas
+          .where((conquista) => conquista.desbloqueado)
+          .toList();
+    }
+
+    return widget.listaDeConquistas;
   }
 
   @override
@@ -54,6 +63,49 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
     // Organiza as conquistas por desbloqueio
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          SizedBox(
+            child: SegmentedButton(
+                multiSelectionEnabled: false,
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(
+                    label: Text(
+                      'Todas',
+                      style: TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                    value: 0,
+                  ),
+                  ButtonSegment(
+                    label: Text('Bloqueadas',
+                        style: TextStyle(
+                          fontSize: 13,
+                        )),
+                    value: 1,
+                  ),
+                  ButtonSegment(
+                    label: Text(
+                      'Desbloqueadas',
+                      style: TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                    value: 2,
+                  ),
+                ],
+                selected: filtragem,
+                onSelectionChanged: (values) {
+                  setState(() {
+                    filtragem = values;
+                  });
+                }),
+          )
+        ]),
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: conquistasDesbloqueadas.length, // Quantidade de conquistas
@@ -124,14 +176,6 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            mostrarTodasAsConquistas = !mostrarTodasAsConquistas;
-          });
-        },
-        child: Icon(mostrarTodasAsConquistas ? Icons.lock_open : Icons.lock),
       ),
     );
   }
