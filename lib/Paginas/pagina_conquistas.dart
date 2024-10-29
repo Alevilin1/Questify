@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Modelos/conquista.dart';
 
@@ -30,7 +29,6 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
   */
   Set<int> filtragem = {0};
   List<Conquista> filtrarConquistas() {
-
     if (filtragem.contains(0)) return widget.listaDeConquistas;
 
     if (filtragem.contains(1)) {
@@ -65,6 +63,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           SizedBox(
@@ -76,7 +75,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
                     label: Text(
                       'Todas',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12.5,
                       ),
                     ),
                     value: 0,
@@ -84,7 +83,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
                   ButtonSegment(
                     label: Text('Bloqueadas',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 12.5,
                         )),
                     value: 1,
                   ),
@@ -92,7 +91,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
                     label: Text(
                       'Desbloqueadas',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12.5,
                       ),
                     ),
                     value: 2,

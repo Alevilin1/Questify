@@ -13,7 +13,6 @@ import 'package:flutter_quesfity/Componentes/side_bar.dart';
 import 'package:flutter_quesfity/Modelos/user.dart';
 import 'package:flutter_quesfity/Paginas/pagina_tarefas.dart';
 import 'package:flutter_quesfity/Paginas/pagina_status.dart';
-import 'package:flutter_quesfity/Paginas/pagina_testes.dart';
 import 'package:flutter_quesfity/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -125,7 +124,6 @@ class HomeState extends State<Home> {
   bool isloading = true;
   AudioPlayer audioPlayer = AudioPlayer();
   bool estaMostrandoConquista = false;
-
 
   //List<Conquista> listaDeConquistasDesbloqueadas = [];
   List<Conquista> listaDeConquistas = [
@@ -372,7 +370,8 @@ class HomeState extends State<Home> {
         ? Container(
             alignment: Alignment.center,
             color: Theme.of(context).primaryColor,
-            child: const CircularProgressIndicator())
+            child: Image.asset(
+                'lib/Icones/Logo.png')) //const CircularProgressIndicator())
         : Scaffold(
             drawer: const SideBar(),
             backgroundColor: Theme.of(context).primaryColor,
@@ -430,56 +429,57 @@ class HomeState extends State<Home> {
                   indent: 0,
                   endIndent: 0,
                   color: Colors.white,
-                ),
+                ),*/
                 ClipRRect(
                   borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(20)),*/
-                NavigationBar(
-                  //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-                  backgroundColor: Theme.of(context).secondaryHeaderColor,
-                  destinations: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: NavigationDestination(
-                        icon: Icon(Icons.check_circle,
-                            color: _selectedIndex == 0
-                                ? Colors.white
-                                : Colors.grey),
-                        //selectedIcon: Icon(Icons.check_box),
-                        label: 'Tarefas',
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: NavigationDestination(
-                        icon: Icon(
-                          Icons.trending_up_rounded,
-                          color:
-                              _selectedIndex == 1 ? Colors.white : Colors.grey,
+                      const BorderRadius.vertical(top: Radius.circular(20)),
+                  child: NavigationBar(
+                    //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+                    backgroundColor: Theme.of(context).secondaryHeaderColor,
+                    destinations: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.check_circle,
+                              color: _selectedIndex == 0
+                                  ? Colors.white
+                                  : Colors.grey),
+                          //selectedIcon: Icon(Icons.check_box),
+                          label: 'Tarefas',
                         ),
-                        label: 'Status',
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: NavigationDestination(
-                        icon: Icon(Icons.emoji_events,
-                            color: _selectedIndex == 2
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(
+                            Icons.trending_up_rounded,
+                            color: _selectedIndex == 1
                                 ? Colors.white
-                                : Colors.grey),
-                        label: 'Conquistas',
+                                : Colors.grey,
+                          ),
+                          label: 'Status',
+                        ),
                       ),
-                    ),
-                  ],
-                  selectedIndex: _selectedIndex, // Index selecionado
-                  onDestinationSelected:
-                      _onItemSelected, // Função ao selecionar
-                  height: 65, // Tamanho da navigator bar
-                  /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: NavigationDestination(
+                          icon: Icon(Icons.emoji_events,
+                              color: _selectedIndex == 2
+                                  ? Colors.white
+                                  : Colors.grey),
+                          label: 'Conquistas',
+                        ),
+                      ),
+                    ],
+                    selectedIndex: _selectedIndex, // Index selecionado
+                    onDestinationSelected:
+                        _onItemSelected, // Função ao selecionar
+                    height: 65, // Tamanho da navigator bar
+                    /*labelBehavior: // Só vai aparecer o texto sé estiver selecionado
                         NavigationDestinationLabelBehavior.onlyShowSelected,*/
-                  elevation: 5,
+                    elevation: 5,
+                  ),
                 ),
-                //),
               ],
             ),
           );

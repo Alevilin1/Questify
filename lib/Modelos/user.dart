@@ -85,7 +85,8 @@ class Usuario {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await firestore.collection('users').doc(userId).get();
 
-    if (snapshot.exists) { // Se o usuario existe
+    if (snapshot.exists) {
+      // Se o usuario existe
       var data = snapshot.data(); // Pega os dados
 
       /*List<Conquista> conquistasCarregadas = [];

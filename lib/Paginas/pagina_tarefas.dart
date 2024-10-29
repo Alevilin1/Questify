@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +22,7 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
   bool? confirmacaoTarefa = false;
   List<Tarefas> listaDeTarefas = [];
   List<String> filtrosSelecionados = [];
+  bool teste = true;
 
   List<Tarefas> _filtrarTarefas() {
     if (filtrosSelecionados.isEmpty) {
@@ -137,34 +140,84 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Seu nivel é: ${widget.user.nivel}',
-              style: const TextStyle(
-                fontSize: 15,
-                fontFamily: 'PlusJakartaSans',
+          Visibility(
+            visible: teste,
+            child: Card(
+              color: Theme.of(context).cardColor,
+              elevation: 4,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.remove_red_eye,
+                            color: Colors.grey[700], size: 18),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        GestureDetector(
+                          child: Text(
+                            "Esconder",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[700]),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              teste = !teste;
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Nível ${widget.user.nivel}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'PlusJakartaSans',
+                          ),
+                        ),
+                        Text(
+                          "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()} XP",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Progressao(user: widget.user),
+                    const SizedBox(height: 8),
+                    Text(
+                      DateFormat.MMMMEEEEd().format(DateTime.now()),
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-          Progressao(user: widget.user), // Barra de progresso de XP
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  DateFormat.MMMMEEEEd().format(DateTime.now()),
-                  style: const TextStyle(
-                      fontFamily: 'PlusJakartaSans', fontSize: 15),
-                ),
-                Text(
-                  "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()}",
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
+          teste ? const SizedBox(height: 16) : const SizedBox(),
           SizedBox(
             height: 40,
             child: ListView(
@@ -227,12 +280,12 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
               ),
               backgroundColor: Theme.of(context).primaryColor,
               body: listaDeTarefas.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.search, size: 64),
+                          Icon(Icons.search, size: 64, color: Colors.grey[400]),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -241,17 +294,18 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                               Text(
                                 "Sem tarefas",
                                 style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 24,
-                                ),
+                                    fontFamily: 'PlusJakartaSans',
+                                    fontSize: 24,
+                                    color: Colors.grey[700]),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             "Toque no botão + para criar uma tarefa.",
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
+                              color: Colors.grey[500],
                             ),
                           ),
                         ],
