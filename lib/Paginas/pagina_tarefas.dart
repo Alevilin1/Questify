@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_quesfity/Componentes/progressao.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +10,9 @@ import 'package:vibration/vibration.dart';
 
 class PrimeiraPagina extends StatefulWidget {
   final Usuario user;
-  const PrimeiraPagina({super.key, required this.user});
+  final bool cabecalho;
+  const PrimeiraPagina(
+      {super.key, required this.user, required this.cabecalho});
 
   @override
   PrimeiraPaginaState createState() => PrimeiraPaginaState();
@@ -22,7 +22,6 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
   bool? confirmacaoTarefa = false;
   List<Tarefas> listaDeTarefas = [];
   List<String> filtrosSelecionados = [];
-  bool teste = true;
 
   List<Tarefas> _filtrarTarefas() {
     if (filtrosSelecionados.isEmpty) {
@@ -79,6 +78,20 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
     await tarefa.deletarTarefa(widget.user.id, tarefa); // Deleta a tarefa
 
     await Future.delayed(const Duration(milliseconds: 300));
+
+    // Exibe o SnackBar na parte inferior
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Center(child: Text('Parabéns,Tarefa concluída!')),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.green,
+          margin: EdgeInsets.only(bottom: 18, left: 90, right: 90),
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          )),
+    );
 
     setState(() {
       tarefa.tarefaConcluida = true; // Conclui a tarefa
@@ -141,42 +154,19 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Visibility(
-            visible: teste,
+            visible: widget.cabecalho,
             child: Card(
               color: Theme.of(context).cardColor,
               elevation: 4,
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(Icons.remove_red_eye,
-                            color: Colors.grey[700], size: 18),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        GestureDetector(
-                          child: Text(
-                            "Esconder",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[700]),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              teste = !teste;
-                            });
-                          },
-                        )
-                      ],
-                    ),
                     const SizedBox(
-                      height: 8,
+                      height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,14 +200,14 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
                       ),
                     ),
                     const SizedBox(
-                      height: 8,
+                      height: 10,
                     )
                   ],
                 ),
               ),
             ),
           ),
-          teste ? const SizedBox(height: 16) : const SizedBox(),
+          widget.cabecalho ? const SizedBox(height: 16) : const SizedBox(),
           SizedBox(
             height: 40,
             child: ListView(

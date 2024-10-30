@@ -124,6 +124,7 @@ class HomeState extends State<Home> {
   bool isloading = true;
   AudioPlayer audioPlayer = AudioPlayer();
   bool estaMostrandoConquista = false;
+  bool cabecalho = true;
 
   //List<Conquista> listaDeConquistasDesbloqueadas = [];
   List<Conquista> listaDeConquistas = [
@@ -273,7 +274,7 @@ class HomeState extends State<Home> {
       ),
       alignment: const AlignmentDirectional(0, 0.8),
       elevation: 5,
-      isCircle: true,
+      isCircle: false,
       icon: const FaIcon(
         FontAwesomeIcons.trophy,
         color: Colors.green,
@@ -358,6 +359,7 @@ class HomeState extends State<Home> {
     final List<Widget> paginas = <Widget>[
       PrimeiraPagina(
         user: user,
+        cabecalho: cabecalho,
       ),
       StatusPagina(
         user: user,
@@ -410,8 +412,26 @@ class HomeState extends State<Home> {
                     onPressed: () {
                       navegarParaPaginaListas();
                     },
-                    icon: const Icon(Icons.format_list_numbered),
+                    icon: const Icon(Icons.filter_list),
                   ),
+                ),
+                Visibility(
+                  visible: _selectedIndex == 0,
+                  child: PopupMenuButton(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        value: 1,
+                        child: cabecalho ? const Text('Esconder Cabeçalho') : const Text('Mostrar Cabeçalho'),
+                        onTap: () {
+                          setState(() {
+                            cabecalho = !cabecalho;
+                          });
+                        },
+                      ),
+                    ];
+                  }),
                 )
               ],
             ),
