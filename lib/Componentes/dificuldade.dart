@@ -21,11 +21,11 @@ class EscolherDificuldadeState extends State<EscolherDificuldade> {
       if (value == 0) {
         xpDificuldadeTarefa = 0;
       } else if (value == 1) {
-        xpDificuldadeTarefa = 20;
+        xpDificuldadeTarefa = 10;
       } else if (value == 2) {
-        xpDificuldadeTarefa = 40;
+        xpDificuldadeTarefa = 20;
       } else if (value == 3) {
-        xpDificuldadeTarefa = 500;
+        xpDificuldadeTarefa = 30;
       }
 
       if (xpDificuldadeTarefa < 0) {

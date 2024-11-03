@@ -70,7 +70,7 @@ class Main extends StatelessWidget {
       darkTheme: ThemeData(
           brightness: Brightness.dark,
           primaryColor: const Color.fromARGB(255, 24, 23,
-              23), //const Color(0xFF000000) const Color.fromARGB(255, 24, 23, 23)
+              23), //const Color(0xFF111111) //const Color(0xFF000000) const Color.fromARGB(255, 24, 23, 23)
           secondaryHeaderColor: const Color(0xFF1E1E1E),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: Colors.white,
@@ -418,20 +418,22 @@ class HomeState extends State<Home> {
                 Visibility(
                   visible: _selectedIndex == 0,
                   child: PopupMenuButton(
-                    color: Theme.of(context).secondaryHeaderColor,
-                    itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        value: 1,
-                        child: cabecalho ? const Text('Esconder Cabeçalho') : const Text('Mostrar Cabeçalho'),
-                        onTap: () {
-                          setState(() {
-                            cabecalho = !cabecalho;
-                          });
-                        },
-                      ),
-                    ];
-                  }),
+                      color: Theme.of(context).secondaryHeaderColor,
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            value: 1,
+                            child: cabecalho
+                                ? const Text('Esconder Cabeçalho')
+                                : const Text('Mostrar Cabeçalho'),
+                            onTap: () {
+                              setState(() {
+                                cabecalho = !cabecalho;
+                              });
+                            },
+                          ),
+                        ];
+                      }),
                 )
               ],
             ),

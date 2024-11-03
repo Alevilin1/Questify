@@ -82,7 +82,7 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
     // Exibe o SnackBar na parte inferior
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-          content: Center(child: Text('Parabéns,Tarefa concluída!')),
+          content: Center(child: Text('Tarefa concluída!')),
           duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.green,
@@ -159,7 +159,7 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
               color: Theme.of(context).cardColor,
               elevation: 4,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(4)),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+
 // ignore: must_be_immutable
 class EscolherImportancia extends StatefulWidget {
   final Function(double) onXPChanged; //Funcão que receberá o valor do slide
@@ -17,24 +19,23 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
   double valorAnterior = 0; //Valor anterior do slide
 
   void updateXpDificuldade(double value) {
-      setState(() {
-        if (value == 0) {
-          xpImportanciaTarefa = 0;
-        } else if (value == 1) {
-          xpImportanciaTarefa = 20;
-        } else if (value == 2) {
-          xpImportanciaTarefa = 40;
-        } else if (value == 3) {
-          xpImportanciaTarefa = 60;
-        }
+    setState(() {
+      if (value == 0) {
+        xpImportanciaTarefa = 0;
+      } else if (value == 1) {
+        xpImportanciaTarefa = 10;
+      } else if (value == 2) {
+        xpImportanciaTarefa = 20;
+      } else if (value == 3) {
+        xpImportanciaTarefa = 30;
+      }
 
-        if (xpImportanciaTarefa < 0) {
-          xpImportanciaTarefa = 0;
-        }
+      if (xpImportanciaTarefa < 0) {
+        xpImportanciaTarefa = 0;
+      }
 
-        widget.onXPChanged(xpImportanciaTarefa); //Setando o xp da tarefa
-      });
-    
+      widget.onXPChanged(xpImportanciaTarefa); //Setando o xp da tarefa
+    });
   }
 
   @override
@@ -63,11 +64,12 @@ class EscolherImportanciaState extends State<EscolherImportancia> {
               setState(() {
                 valorSlide = value;
                 updateXpDificuldade(value); //Atualiza o xp da tarefa
-
-                //Debug
-                print(xpImportanciaTarefa.toString());
-                print("O valor atual é: ${valorSlide.toString()}");
               });
+              
+              //Debug
+              print(xpImportanciaTarefa.toString());
+              print("O valor atual é: ${valorSlide.toString()}");
+              print(value.toString());
             }),
       ],
     );
