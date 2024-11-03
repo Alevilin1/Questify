@@ -20,7 +20,7 @@ class StatusPaginaState extends State<StatusPagina> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0), // padding geral
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -28,10 +28,17 @@ class StatusPaginaState extends State<StatusPagina> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   color: Theme.of(context).secondaryHeaderColor,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -39,97 +46,86 @@ class StatusPaginaState extends State<StatusPagina> {
                       "Vida LV${widget.user.nivel}",
                       style: const TextStyle(
                         fontFamily: 'PlusJakartaSans',
-                        fontSize: 24,
+                        fontSize: 26,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    Progressao(user: widget.user),
                     const SizedBox(height: 8),
-                    SizedBox(child: Progressao(user: widget.user)),
-                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()}",
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
                     Text(
                       "Você concluiu ${widget.user.tarefasConcluidas} tarefas até o momento!",
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    const SizedBox(height: 4),
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(
+                  height: 24), 
+
               Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).secondaryHeaderColor,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: const [ // sombra ao redor dos atributos
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      const Row(
-                        children: [
-                          Text("Atributos", style: TextStyle(fontSize: 20)),
-                        ],
-                      ),
-                      const Divider(),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Força",
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 18,
-                            ),
-                          ),
-                          ProgressaoAtributos(
-                              user: widget.user, atributo: 'forca'),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Inteligência",
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 18,
-                            ),
-                          ),
-                          ProgressaoAtributos(
-                              user: widget.user, atributo: 'inteligencia'),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Carisma",
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 18,
-                            ),
-                          ),
-                          ProgressaoAtributos(
-                              user: widget.user, atributo: 'carisma'),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                  ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Atributos",
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    const Divider(),
+                    const SizedBox(height: 16),
+                    _elementoAtributos("Força", 'forca'),
+                    const SizedBox(height: 16),
+                    _elementoAtributos("Inteligência", 'inteligencia'),
+                    const SizedBox(height: 16),
+                    _elementoAtributos("Carisma", 'carisma'),
+                    const SizedBox(height: 8),
+                  ],
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+// Método para construir linhas de atributos
+  Widget _elementoAtributos(String title, String atributo) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontFamily: 'PlusJakartaSans',
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+        ProgressaoAtributos(user: widget.user, atributo: atributo),
+      ],
     );
   }
 }

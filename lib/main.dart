@@ -378,6 +378,7 @@ class HomeState extends State<Home> {
             drawer: const SideBar(),
             backgroundColor: Theme.of(context).primaryColor,
             appBar: AppBar(
+              surfaceTintColor: Theme.of(context).primaryColor,
               backgroundColor: Theme.of(context).primaryColor,
               leading: Builder(
                 builder: (BuildContext context) => IconButton(

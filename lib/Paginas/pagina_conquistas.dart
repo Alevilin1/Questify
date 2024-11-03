@@ -64,6 +64,7 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
+        surfaceTintColor: Theme.of(context).primaryColor,
         centerTitle: true,
         title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           SizedBox(

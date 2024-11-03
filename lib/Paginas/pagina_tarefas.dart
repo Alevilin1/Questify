@@ -148,215 +148,217 @@ class PrimeiraPaginaState extends State<PrimeiraPagina> {
   Widget build(BuildContext context) {
     final tarefasFiltradas = _filtrarTarefas();
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-            visible: widget.cabecalho,
-            child: Card(
-              color: Theme.of(context).cardColor,
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Nível ${widget.user.nivel}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'PlusJakartaSans',
-                          ),
-                        ),
-                        Text(
-                          "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()} XP",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Progressao(user: widget.user),
-                    const SizedBox(height: 8),
-                    Text(
-                      DateFormat.MMMMEEEEd().format(DateTime.now()),
-                      style: TextStyle(
-                        fontFamily: 'PlusJakartaSans',
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    )
-                  ],
-                ),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        elevation: 5,
+        backgroundColor:
+            Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 28),
+        onPressed: () async {
+          final resultado = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CriarTarefa(
+                listaDeTarefas: List.from(listaDeTarefas),
+                user: widget.user,
               ),
             ),
-          ),
-          widget.cabecalho ? const SizedBox(height: 16) : const SizedBox(),
-          SizedBox(
-            height: 40,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: widget.user.filtros.map((filtros) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: FilterChip(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    label: Text(
-                      filtros,
-                      style: const TextStyle(fontFamily: 'PlusJakartaSans'),
-                    ),
-                    selected: filtrosSelecionados.contains(filtros),
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          filtrosSelecionados.add(filtros);
-                        } else {
-                          filtrosSelecionados.remove(filtros);
-                        }
-                      });
-                    },
+          );
+          if (resultado != null) {
+            setState(() {
+              listaDeTarefas = resultado;
+            });
+          }
+        },
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Aumentar padding geral
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Visibility(
+                visible: widget.cabecalho,
+                child: Card(
+                  color: Theme.of(context).cardColor,
+                  elevation: 6, // Aumentar a elevação
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(8), // Bordas mais arredondadas
                   ),
-                );
-              }).toList(),
-            ),
-          ),
-          listaDeTarefas.isEmpty
-              ? const SizedBox()
-              : const SizedBox(height: 24),
-          Expanded(
-            child: Scaffold(
-              floatingActionButton: FloatingActionButton(
-                // Botaão para criar uma nova tarefa
-                elevation: 5,
-                backgroundColor:
-                    Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                shape: const CircleBorder(),
-                child: const Icon(Icons.add, size: 28),
-                onPressed: () async {
-                  final resultado = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CriarTarefa(
-                        listaDeTarefas: List.from(listaDeTarefas),
-                        user: widget.user,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Nível ${widget.user.nivel}',
+                              style: const TextStyle(
+                                fontSize: 22, // Aumentar o tamanho da fonte
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'PlusJakartaSans',
+                              ),
+                            ),
+                            Text(
+                              "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()} XP",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Progressao(user: widget.user),
+                        const SizedBox(height: 8),
+                        Text(
+                          DateFormat.MMMMEEEEd().format(DateTime.now()),
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              widget.cabecalho ? const SizedBox(height: 16) : const SizedBox(),
+
+              // Lista de Filtros
+              SizedBox(
+                height: 50,
+                width: MediaQuery.of(context).size.width * 0.95,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: widget.user.filtros.map((filtros) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: FilterChip(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        label: Text(
+                          filtros,
+                          style: const TextStyle(fontFamily: 'PlusJakartaSans'),
+                        ),
+                        selected: filtrosSelecionados.contains(filtros),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            if (selected) {
+                              filtrosSelecionados.add(filtros);
+                            } else {
+                              filtrosSelecionados.remove(filtros);
+                            }
+                          });
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+              // Mensagem se não houver tarefas
+              listaDeTarefas.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Sem tarefas",
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 24,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Toque no botão + para criar uma tarefa.",
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : const SizedBox(height: 24),
+
+              // Lista de Tarefas
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: tarefasFiltradas.map((tarefa) {
+                  return Card(
+                    color: Theme.of(context).cardColor,
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 12, // Aumentar o padding vertical
+                        horizontal: 16,
+                      ),
+                      title: Text(
+                        tarefa.titulo,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18, // Aumentar o tamanho da fonte do título
+                        ),
+                      ),
+                      leading: Checkbox(
+                        activeColor: Theme.of(context)
+                            .colorScheme
+                            .secondary, // Cor do checkbox
+                        value: tarefa.tarefaConcluida,
+                        onChanged: (value) async {
+                          if (value != null && value == true) {
+                            setState(() {
+                              tarefa.tarefaConcluida = value;
+                              concluirTarefa(tarefa);
+                            });
+
+                            if (await Vibration.hasVibrator() != null) {
+                              await Vibration.vibrate(duration: 100);
+                            }
+                          }
+                        },
+                      ),
+                      subtitle: tarefa.descricao.isNotEmpty
+                          ? Text(
+                              tarefa.descricao,
+                              style: const TextStyle(fontSize: 14),
+                            )
+                          : null,
+                      trailing: Text(
+                        "${tarefa.xp} XP",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   );
-                  if (resultado != null) {
-                    setState(() {
-                      listaDeTarefas = resultado;
-                    });
-                  }
-                },
+                }).toList(),
               ),
-              backgroundColor: Theme.of(context).primaryColor,
-              body: listaDeTarefas.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search, size: 64, color: Colors.grey[400]),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              //Icon(Icons.search, size: 32),
-                              //SizedBox(width: 8),
-                              Text(
-                                "Sem tarefas",
-                                style: TextStyle(
-                                    fontFamily: 'PlusJakartaSans',
-                                    fontSize: 24,
-                                    color: Colors.grey[700]),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Toque no botão + para criar uma tarefa.",
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView(
-                      children: tarefasFiltradas.map((tarefa) {
-                        return Card(
-                          color: Theme.of(context).cardColor,
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 16,
-                            ),
-                            title: Text(
-                              tarefa.titulo,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            leading: Checkbox(
-                              activeColor: Colors.white,
-                              value: tarefa.tarefaConcluida,
-                              onChanged: (value) async {
-                                if (value != null && value == true) {
-                                  setState(() {
-                                    tarefa.tarefaConcluida = value;
-                                    concluirTarefa(tarefa);
-                                  });
-
-                                  if (await Vibration.hasVibrator() != null) {
-                                    await Vibration.vibrate(duration: 100);
-                                  }
-                                }
-                              },
-                            ),
-                            subtitle: tarefa.descricao.isNotEmpty
-                                ? Text(
-                                    tarefa.descricao,
-                                    style: const TextStyle(fontSize: 14),
-                                  )
-                                : null,
-                            trailing: Text(
-                              "${tarefa.xp} XP",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
