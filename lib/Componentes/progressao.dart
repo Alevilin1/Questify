@@ -1,9 +1,9 @@
 import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:flutter_quesfity/Classes/user.dart';
 
 class Progressao extends StatefulWidget {
-  final Usuario user;
+  final User user;
   const Progressao({super.key, required this.user});
   @override
   ProgressaoState createState() => ProgressaoState();

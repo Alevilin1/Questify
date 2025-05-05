@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Conquista {
+class Conquista extends ChangeNotifier {
   String id;
   String nome;
   String descricao;
@@ -10,16 +10,14 @@ class Conquista {
   int quantidadeDesbloqueio;
   IconData? icone;
 
-  Conquista
-  ({  
-      this.id = '',
+  Conquista(
+      {this.id = '',
       required this.nome,
       required this.descricao,
       required this.idFuncao,
       this.desbloqueado = false,
       this.quantidadeDesbloqueio = 1,
-      this.icone
-  });
+      this.icone});
 
   void checarDesbloqueio() {
     if (!desbloqueado) {
@@ -30,7 +28,7 @@ class Conquista {
 
   // Função para atualizar uma conquista específica do usuário
   Future<void> atualizarConquista(
-      String userId, String conquistaId, bool desbloqueado) async {
+      String? userId, String conquistaId, bool desbloqueado) async {
     try {
       await FirebaseFirestore.instance
           .collection('users') // A coleção de usuários

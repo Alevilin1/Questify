@@ -9,14 +9,14 @@ class Tarefas {
   DateTime? data = DateTime.now();
   String filtroTarefa;
   bool? tarefaConcluida = false;
-  List<bool> atributos;
+  //List<bool> atributos;
 
   Tarefas({
     this.id = '',
     required this.xp,
     required this.titulo,
     required this.descricao,
-    required this.atributos,
+    //required this.atributos,
     this.data,
     this.tarefaConcluida = false,
     this.filtroTarefa = '',
@@ -33,7 +33,7 @@ class Tarefas {
       'descricao': descricao,
       'tarefaConcluida': tarefaConcluida,
       'xp': xp,
-      'atributos': atributos,
+      //'atributos': atributos,
       'filtroTarefa': filtroTarefa,
       'createdAt': FieldValue.serverTimestamp(), // Adiciona o Timestamp ao criar
     });
@@ -41,7 +41,7 @@ class Tarefas {
   }
 
   // Funcao para deletar a tarefa do banco de dados
-  Future<void> deletarTarefa(String userId, Tarefas tarefa) async {
+  Future<void> deletarTarefa(String? userId, Tarefas tarefa) async {
     if (tarefa.id.isNotEmpty) {
       // Verifica se o ID da tarefa não é vazio
       await FirebaseFirestore.instance

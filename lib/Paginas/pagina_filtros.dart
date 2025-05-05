@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:flutter_quesfity/Classes/user.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PaginaListas extends StatefulWidget {
-  final Usuario user;
+  final User user;
   const PaginaListas({super.key, required this.user});
 
   @override
@@ -20,9 +21,9 @@ class PaginaListasState extends State<PaginaListas> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
+        title: Text(
           "Filtros",
-          style: TextStyle(fontFamily: 'PlusJakartaSans'),
+          style: GoogleFonts.poppins(),
         ),
       ),
       body: SingleChildScrollView(
@@ -34,7 +35,8 @@ class PaginaListasState extends State<PaginaListas> {
               itemCount: widget.user.filtros.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(widget.user.filtros[index]),
+                  title: Text(widget.user.filtros[index],
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
                   trailing: IconButton(
                       onPressed: () {
                         setState(() {
@@ -101,7 +103,11 @@ class PaginaListasState extends State<PaginaListas> {
                             widget.user); // Retorna para a pagina anterior
                       }
                     },
-                    icon: const Icon(Icons.send, size: 30),
+                    icon: Icon(
+                      Icons.send,
+                      size: 30,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
+                    ),
                   ),
                 ])),
           ),

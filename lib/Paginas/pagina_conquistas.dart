@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Modelos/conquista.dart';
+import 'package:flutter_quesfity/Classes/conquista.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PaginaConquistas extends StatefulWidget {
   final List<Conquista> listaDeConquistas; // Lista de conquistas parametro
@@ -66,117 +67,131 @@ class _PaginaConquistasState extends State<PaginaConquistas> {
         backgroundColor: Theme.of(context).primaryColor,
         surfaceTintColor: Theme.of(context).primaryColor,
         centerTitle: true,
-        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SizedBox(
-            child: SegmentedButton(
-                multiSelectionEnabled: false,
-                showSelectedIcon: false,
-                segments: const [
-                  ButtonSegment(
-                    label: Text(
-                      'Todas',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                      ),
-                    ),
-                    value: 0,
-                  ),
-                  ButtonSegment(
-                    label: Text('Bloqueadas',
+        title: Text("Conquistas",
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            )),
+      ),
+      body: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            SizedBox(
+              child: SegmentedButton(
+                  multiSelectionEnabled: false,
+                  showSelectedIcon: false,
+                  segments: const [
+                    ButtonSegment(
+                      label: Text(
+                        'Todas',
                         style: TextStyle(
                           fontSize: 12.5,
-                        )),
-                    value: 1,
-                  ),
-                  ButtonSegment(
-                    label: Text(
-                      'Desbloqueadas',
-                      style: TextStyle(
-                        fontSize: 12.5,
+                        ),
+                      ),
+                      value: 0,
+                    ),
+                    ButtonSegment(
+                      label: Text('Bloqueadas',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                          )),
+                      value: 1,
+                    ),
+                    ButtonSegment(
+                      label: Text(
+                        'Desbloqueadas',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                        ),
+                      ),
+                      value: 2,
+                    ),
+                  ],
+                  selected: filtragem,
+                  onSelectionChanged: (values) {
+                    setState(() {
+                      filtragem = values;
+                    });
+                  }),
+            )
+          ]),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount:
+                  conquistasDesbloqueadas.length, // Quantidade de conquistas
+              itemBuilder: (context, index) {
+                // Itera sobre as conquistas
+                final conquista = conquistasDesbloqueadas[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        gradient: LinearGradient(
+                          // Gradiente de cores para as conquistas
+                          colors: conquista.desbloqueado
+                              ? [Colors.green.shade800, Colors.green.shade700]
+                              : [Colors.grey.shade800, Colors.grey.shade700],
+                        ),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        leading: Container(
+                          // Icone da conquista
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: conquista.desbloqueado
+                                ? Colors.green.shade300.withOpacity(
+                                    0.3) // Cor do icone da conquista desbloqueada
+                                : Colors.grey.shade600.withOpacity(
+                                    0.3), // Cor do icone da conquista bloqueada
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            conquista.icone,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                        title: Text(
+                          conquista.nome,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            conquista.descricao,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        trailing: Icon(
+                          conquista.desbloqueado
+                              ? Icons.emoji_events
+                              : Icons.lock,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                       ),
                     ),
-                    value: 2,
                   ),
-                ],
-                selected: filtragem,
-                onSelectionChanged: (values) {
-                  setState(() {
-                    filtragem = values;
-                  });
-                }),
-          )
-        ]),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: conquistasDesbloqueadas.length, // Quantidade de conquistas
-        itemBuilder: (context, index) {
-          // Itera sobre as conquistas
-          final conquista = conquistasDesbloqueadas[index];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                    // Gradiente de cores para as conquistas
-                    colors: conquista.desbloqueado
-                        ? [Colors.green.shade800, Colors.green.shade700]
-                        : [Colors.grey.shade800, Colors.grey.shade700],
-                  ),
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: Container(
-                    // Icone da conquista
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: conquista.desbloqueado
-                          ? Colors.green.shade300.withOpacity(
-                              0.3) // Cor do icone da conquista desbloqueada
-                          : Colors.grey.shade600.withOpacity(
-                              0.3), // Cor do icone da conquista bloqueada
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      conquista.icone,
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text(
-                    conquista.nome,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      conquista.descricao,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  trailing: Icon(
-                    conquista.desbloqueado ? Icons.emoji_events : Icons.lock,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

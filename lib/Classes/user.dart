@@ -1,25 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_quesfity/Modelos/conquista.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_quesfity/Classes/conquista.dart';
 
-class Usuario {
-  String id;
+class User extends ChangeNotifier {
+  final String? id;
+  final String? nome;
   double xp;
+  int conquistasDesbloqueadas;
   int nivel;
   int tarefasConcluidas;
   List<dynamic> filtros; // Lista de filtros
 
-  Map<String, dynamic> xpAtributos = {}; // xp dos atributos
-  Map<String, dynamic> nivelAtributos = {}; // nivel dos atributos
+  //Map<String, dynamic> xpAtributos = {}; // xp dos atributos
+  //Map<String, dynamic> nivelAtributos = {}; // nivel dos atributos
 
-  Usuario({
-    required this.id,
+  User({
+    this.id,
+    this.nome,
     this.xp = 0,
+    this.conquistasDesbloqueadas = 0,
     this.tarefasConcluidas = 0,
     int? nivel,
-    Map<String, dynamic>? xpAtributos,
-    Map<String, dynamic>? nivelAtributos,
+    //Map<String, dynamic>? xpAtributos,
+    //Map<String, dynamic>? nivelAtributos,
     List<dynamic>? filtros,
-  })  : xpAtributos = xpAtributos ?? // Inicializando os valores do xp
+  })  : filtros = filtros ??
+            [
+              'Trabalho',
+              'Pessoal',
+              'Estudo'
+            ], // Inicializando os filtros padrao
+        nivel = nivel ?? 1;
+  /*: xpAtributos = xpAtributos ?? // Inicializando os valores do xp
             {
               'forca': 0,
               'inteligencia': 0,
@@ -30,14 +42,7 @@ class Usuario {
               'forca': 1,
               'inteligencia': 1,
               'carisma': 1,
-            },
-        filtros = filtros ??
-            [
-              'Trabalho',
-              'Pessoal',
-              'Estudo'
-            ], // Inicializando os filtros padrao
-        nivel = nivel ?? 1;
+            },*/
 
   //Salvando os dados do usuario
   Future<void> salvar() async {
@@ -45,12 +50,72 @@ class Usuario {
     await firestore.collection('users').doc(id).set({
       'xp': xp,
       'nivel': nivel,
-      'xpAtributos': xpAtributos,
-      'nivelAtributos': nivelAtributos,
+      'nome': nome,
+      'conquistasDesbloqueadas': conquistasDesbloqueadas,
       'filtros': filtros,
       'tarefasConcluidas': tarefasConcluidas,
     });
   }
+
+  /*Future<void> carregarConquistas(List<Conquista> listaDeConquistas) async {
+    final firebaseUser = firebase_auth
+        .FirebaseAuth.instance.currentUser; // Usando o uid do Firebase Auth
+
+    if (firebaseUser != null) {
+      String userId = firebaseUser.uid; // Usando o uid do usuário autenticado
+
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance // Busca as conquistas do usuário
+              .collection('users')
+              .doc(userId)
+              .collection('conquistas')
+              .orderBy('createdAt', descending: false)
+              .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Se o usuário tem conquistas, carrega as conquistas
+        listaDeConquistas = snapshot.docs.map((doc) {
+          int codePoints = doc['icone'];
+          return Conquista(
+            nome: doc['nome'],
+            descricao: doc['descricao'],
+            idFuncao: doc['idFuncao'],
+            desbloqueado: doc['desbloqueado'],
+            id: doc.id,
+            quantidadeDesbloqueio: doc['quantidadeDesbloqueio'],
+            icone: IconData(codePoints, fontFamily: 'MaterialIcons'),
+          );
+        }).toList();
+        notifyListeners();
+      } else {}
+    }
+  }
+
+  Future<void> carregarUsuario(
+      User user, List<Conquista> listaDeConquistas, bool isloading) async {
+    final firebaseUser = firebase_auth
+        .FirebaseAuth.instance.currentUser; // Usando o uid do Firebase Auth
+
+    if (firebaseUser != null) {
+      // Usando o uid do Firebase Auth
+      String userId = firebaseUser.uid;
+      User? usuarioCarregado =
+          await User.carregar(userId); // Carregando o usuário
+
+      if (usuarioCarregado != null) {
+        // Se o usuário foi carregado
+        // Caso o usuário tenha sido carregado
+        user = usuarioCarregado; // Usando o usuário carregado
+      } else {
+        // Caso o usuário não tenha sido carregado
+        user = User(id: userId); // Cria um novo usuário
+        await user.salvar(); // Cria o usuário
+        await user.salvarConquistas(listaDeConquistas); // Cria as conquistas
+      }
+    }
+
+    notifyListeners(); // Atualiza a interface
+  }*/
 
   Future<void> salvarConquistas(List<Conquista> conquistas) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -80,7 +145,7 @@ class Usuario {
   }
 
   // Carrega os dados do usuário do Firestore
-  static Future<Usuario?> carregar(String userId) async {
+  static Future<User?> carregar(String userId) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await firestore.collection('users').doc(userId).get();
@@ -107,12 +172,12 @@ class Usuario {
         );
       }).toList();*/
 
-      return Usuario(
+      return User(
         id: userId,
+        nome: data?['nome'] ?? "Usuário",
         xp: data?['xp'] ?? 0,
         nivel: data?['nivel'] ?? 1,
-        xpAtributos: data?['xpAtributos'] ?? {},
-        nivelAtributos: data?['nivelAtributos'] ?? {},
+        conquistasDesbloqueadas: data?['conquistasDesbloqueadas'] ?? 0,
         filtros: data?['filtros'] ?? [],
         tarefasConcluidas: data?['tarefasConcluidas'] ?? 0,
       );
@@ -131,7 +196,7 @@ class Usuario {
         xpNivel(); //Exemplo: xp: 20, xpnivel = 200, 20/200 = 0,1. 0,1 é 10% na barra de progresso
   }
 
-  int xpDosAtributos(String atributo) {
+  /*int xpDosAtributos(String atributo) {
     return nivelAtributos[atributo] * 100;
   }
 
@@ -139,4 +204,5 @@ class Usuario {
     //Mesmo processo da progressao do xp geral para os atributos
     return xpAtributos[atributo] / xpDosAtributos(atributo);
   }
+}*/
 }

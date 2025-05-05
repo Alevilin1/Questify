@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Componentes/progressao.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_quesfity/criar_tarefas.dart';
-import 'package:flutter_quesfity/Modelos/tarefas.dart';
-import 'package:flutter_quesfity/Modelos/user.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:vibration/vibration.dart';
+//import 'package:flutter/services.dart';
+import 'package:flutter_quesfity/Classes/dark_theme.dart';
+import 'package:flutter_quesfity/Classes/tarefas.dart';
+//import 'package:flutter_quesfity/Componentes/progressao.dart';
+import 'package:flutter_quesfity/Classes/lista_tarefas.dart';
+//import 'package:flutter_quesfity/Componentes/side_bar.dart';
+//import 'package:flutter_quesfity/data.dart';
+import 'package:google_fonts/google_fonts.dart';
+//import 'package:intl/intl.dart';
+import 'package:flutter_quesfity/Paginas/pagina_criar_tarefas.dart';
+//import 'package:flutter_quesfity/Classes/tarefas.dart';
+import 'package:flutter_quesfity/Classes/user.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+//import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+//import 'package:vibration/vibration.dart';
 
 class PrimeiraPagina extends StatefulWidget {
-  final Usuario user;
+  final User user;
   final bool cabecalho;
   const PrimeiraPagina(
       {super.key, required this.user, required this.cabecalho});
@@ -20,343 +28,246 @@ class PrimeiraPagina extends StatefulWidget {
 
 class PrimeiraPaginaState extends State<PrimeiraPagina> {
   bool? confirmacaoTarefa = false;
-  List<Tarefas> listaDeTarefas = [];
   List<String> filtrosSelecionados = [];
-
-  List<Tarefas> _filtrarTarefas() {
-    if (filtrosSelecionados.isEmpty) {
-      return listaDeTarefas; // Retorna todas as tarefas se nenhum filtro estiver selecionado
-    }
-
-    return listaDeTarefas.where((tarefa) {
-      return filtrosSelecionados.contains(
-          tarefa.filtroTarefa); // Filtra com base nos filtros selecionados
-    }).toList();
-  }
-
-  Future<void> _carregarTarefas() async {
-    final firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
-
-    if (firebaseUser != null) {
-      String userId = firebaseUser.uid; // Usando o uid do usuário autenticado
-
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('tarefas')
-          .orderBy('createdAt', descending: true)
-          .get();
-
-      setState(() {
-        listaDeTarefas = snapshot.docs.map((doc) {
-          List<dynamic> atributosList = doc['atributos'];
-          List<bool> atributos = atributosList.map((e) => e as bool).toList();
-          return Tarefas(
-            id: doc.id,
-            titulo: doc['titulo'],
-            descricao: doc['descricao'],
-            tarefaConcluida: doc['tarefaConcluida'],
-            xp: doc['xp'],
-            filtroTarefa: doc['filtroTarefa'],
-            atributos: atributos,
-          );
-        }).toList();
-      });
-    } else {
-      // Lidar com o caso em que não há usuário autenticado
-      //print("Nenhum usuário autenticado.");
-    }
-  }
+  final _listKey = GlobalKey<AnimatedListState>();
 
   @override
   void initState() {
     super.initState();
-    _carregarTarefas();
-  }
-
-  void concluirTarefa(Tarefas tarefa) async {
-    await tarefa.deletarTarefa(widget.user.id, tarefa); // Deleta a tarefa
-
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    // Exibe o SnackBar na parte inferior
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-          content: Center(child: Text('Tarefa concluída!')),
-          duration: Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.green,
-          margin: EdgeInsets.only(bottom: 18, left: 90, right: 90),
-          elevation: 5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          )),
-    );
-
-    setState(() {
-      tarefa.tarefaConcluida = true; // Conclui a tarefa
-      listaDeTarefas.remove(tarefa); // Remove a tarefa da lista
-
-      // Adicionando XP
-      widget.user.xp += tarefa.xp;
-
-      if (tarefa.atributos[0]) {
-        widget.user.xpAtributos['forca'] += tarefa.xp / 2;
-      }
-      if (tarefa.atributos[1]) {
-        widget.user.xpAtributos['inteligencia'] += tarefa.xp / 2;
-      }
-      if (tarefa.atributos[2]) {
-        widget.user.xpAtributos['carisma'] += tarefa.xp / 2;
-      }
-
-      while (widget.user.xpAtributos['forca'] >=
-          widget.user.xpDosAtributos('forca')) {
-        widget.user.xpAtributos['forca'] -= widget.user
-            .xpDosAtributos('forca'); // Remove XP para o proximo nivel
-        widget.user.nivelAtributos['forca']++; // Aumenta o nível do atributo
-      }
-
-      while (widget.user.xpAtributos['inteligencia'] >=
-          widget.user.xpDosAtributos('inteligencia')) {
-        widget.user.xpAtributos['inteligencia'] -= widget.user
-            .xpDosAtributos('inteligencia'); // Remove XP para o proximo nivel
-        widget.user
-            .nivelAtributos['inteligencia']++; // Aumenta o nivel do atributo
-      }
-
-      while (widget.user.xpAtributos['carisma'] >=
-          widget.user.xpDosAtributos('carisma')) {
-        widget.user.xpAtributos['carisma'] -= widget.user
-            .xpDosAtributos('carisma'); // Remove XP para o proximo nivel
-        widget.user.nivelAtributos['carisma']++; // Aumenta o nível do atributo
-      }
-
-      while (widget.user.xp >= widget.user.xpNivel()) {
-        widget.user.xp -=
-            widget.user.xpNivel(); // Remove XP para o proximo nivel
-        widget.user.nivel++; // Aumenta o nível do usuário
-      }
-
-      widget
-          .user.tarefasConcluidas++; // Aumenta o contador de tarefas concluidas
-      widget.user.salvar(); // Salva o XP e o nível do usuário
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ListaTarefas>(context, listen: false)
+          .carregarTarefas(); // Carregando do banco de dados
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final tarefasFiltradas = _filtrarTarefas();
+    final providerTarefas =
+        Provider.of<ListaTarefas>(context); // Provider de tarefas
+    final darkTheme = Provider.of<IsDark>(context).isDarkTheme;
+    var listaDeTarefas = providerTarefas.listaDeTarefas; // Lista de tarefas
+
+    listaDeTarefas = providerTarefas.filtrarTarefas(filtrosSelecionados);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        elevation: 5,
-        backgroundColor:
-            Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 28),
-        onPressed: () async {
-          final resultado = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CriarTarefa(
-                listaDeTarefas: List.from(listaDeTarefas),
-                user: widget.user,
-              ),
-            ),
-          );
-          if (resultado != null) {
-            setState(() {
-              listaDeTarefas = resultado;
-            });
-          }
-        },
+      //drawer: const SideBar(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: const Icon(Icons.menu),
+          ),
+        ),
+        title: const Text("Tarefas"),
+        forceMaterialTransparency: true,
       ),
-      backgroundColor: Theme.of(context).primaryColor,
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Aumentar padding geral
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Visibility(
-                visible: widget.cabecalho,
-                child: Card(
-                  color: Theme.of(context).cardColor,
-                  elevation: 6, // Aumentar a elevação
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(8), // Bordas mais arredondadas
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 24.0, right: 8),
+        child: FloatingActionButton(
+          elevation: 5,
+          backgroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(
+            Icons.add,
+            size: 28,
+            color: Colors.black,
+          ),
+          onPressed: () async {
+            final resultado = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CriarTarefa(
+                  user: widget.user,
+                ),
+              ),
+            );
+            if (resultado != null) {
+              setState(() {
+                listaDeTarefas = resultado;
+              });
+            }
+          },
+        ),
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Theme.of(context).primaryColor,
+        child: SafeArea(
+          top: true,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Olá, ${widget.user.nome}",
+                        style: GoogleFonts.poppins(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w600,
+                            color: !darkTheme
+                                ? const Color(0xFF2E3A59)
+                                : Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "Tenha um bom dia",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: !darkTheme
+                                ? const Color(0xFF2E3A59)
+                                : Colors.white),
+                      )
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Nível ${widget.user.nivel}',
-                              style: const TextStyle(
-                                fontSize: 22, // Aumentar o tamanho da fonte
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'PlusJakartaSans',
-                              ),
-                            ),
-                            Text(
-                              "${widget.user.xp.toInt()}/${widget.user.xpNivel().toInt()} XP",
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Progressao(user: widget.user),
-                        const SizedBox(height: 8),
-                        Text(
-                          DateFormat.MMMMEEEEd().format(DateTime.now()),
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 16,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: SizedBox(
+                    height: 55,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.user.filtros.length,
+                      itemBuilder: (context, index) {
+                        return cardFiltros(index);
+                      },
                     ),
                   ),
                 ),
-              ),
-              widget.cabecalho ? const SizedBox(height: 16) : const SizedBox(),
-
-              // Lista de Filtros
-              SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.95,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: widget.user.filtros.map((filtros) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: FilterChip(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        label: Text(
-                          filtros,
-                          style: const TextStyle(fontFamily: 'PlusJakartaSans'),
-                        ),
-                        selected: filtrosSelecionados.contains(filtros),
-                        onSelected: (bool selected) {
-                          setState(() {
-                            if (selected) {
-                              filtrosSelecionados.add(filtros);
-                            } else {
-                              filtrosSelecionados.remove(filtros);
-                            }
-                          });
-                        },
-                      ),
-                    );
-                  }).toList(),
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    "Tarefas",
+                    style: GoogleFonts.poppins(
+                        color:
+                            !darkTheme ? const Color(0xFF2E3A59) : Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600),
+                  ),
                 ),
-              ),
-
-              // Mensagem se não houver tarefas
-              listaDeTarefas.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Sem tarefas",
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 24,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Toque no botão + para criar uma tarefa.",
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : const SizedBox(height: 24),
-
-              // Lista de Tarefas
-              ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: tarefasFiltradas.map((tarefa) {
-                  return Card(
-                    color: Theme.of(context).cardColor,
-                    elevation: 6,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 12, // Aumentar o padding vertical
-                        horizontal: 16,
-                      ),
-                      title: Text(
-                        tarefa.titulo,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18, // Aumentar o tamanho da fonte do título
-                        ),
-                      ),
-                      leading: Checkbox(
-                        activeColor: Theme.of(context)
-                            .colorScheme
-                            .secondary, // Cor do checkbox
-                        value: tarefa.tarefaConcluida,
-                        onChanged: (value) async {
-                          if (value != null && value == true) {
-                            setState(() {
-                              tarefa.tarefaConcluida = value;
-                              concluirTarefa(tarefa);
-                            });
-
-                            if (await Vibration.hasVibrator() != null) {
-                              await Vibration.vibrate(duration: 100);
-                            }
-                          }
+                listaDeTarefas.isEmpty
+                    ? nenhumaTarefa()
+                    : Expanded(
+                        child: ListView.builder(
+                        key: _listKey,
+                        itemCount: listaDeTarefas.length,
+                        padding: const EdgeInsets.only(left: 24, right: 24),
+                        itemBuilder: (context, index) {
+                          return cardTarefas(context, listaDeTarefas, index,
+                              providerTarefas, darkTheme);
                         },
-                      ),
-                      subtitle: tarefa.descricao.isNotEmpty
-                          ? Text(
-                              tarefa.descricao,
-                              style: const TextStyle(fontSize: 14),
-                            )
-                          : null,
-                      trailing: Text(
-                        "${tarefa.xp} XP",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
+                      ))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding nenhumaTarefa() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24),
+      child: Text(
+        "Nenhuma tarefa foi encontrada",
+        style: GoogleFonts.poppins(
+            color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
+  Padding cardTarefas(BuildContext context, List<Tarefas> listaDeTarefas,
+      int index, ListaTarefas providerTarefas, bool darkTheme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18.0),
+      child: Container(
+        width: 200,
+        height: 90,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: Theme.of(context).cardColor),
+        child: Center(
+          child: ListTile(
+            leading: Checkbox(
+              value: listaDeTarefas[index].tarefaConcluida,
+              onChanged: (value) {
+                if (value != null && value == true) {
+                  setState(() {
+                    listaDeTarefas[index].tarefaConcluida = true;
+                  });
+                  providerTarefas.concluirTarefa(
+                      listaDeTarefas[index], widget.user);
+                }
+              },
+            ),
+            dense: true,
+            trailing:
+                IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+            subtitle: listaDeTarefas[index].descricao.isEmpty
+                ? null
+                : Text(
+                    listaDeTarefas[index].descricao,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                  ),
+            title: Text(
+              listaDeTarefas[index].titulo,
+              style: GoogleFonts.poppins(
+                  color: !darkTheme ? const Color(0xFF2E3A59) : Colors.white,
+                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding cardFiltros(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            if (filtrosSelecionados.contains(widget.user.filtros[index])) {
+              filtrosSelecionados.remove(widget.user.filtros[index]);
+            } else {
+              filtrosSelecionados.add(widget.user.filtros[index]);
+            }
+          });
+        },
+        child: Container(
+          width: 100,
+          //height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            color: filtrosSelecionados.contains(widget.user.filtros[index])
+                ? Colors.white
+                : const Color(0xFFE5EAFC),
+          ),
+          child: Center(
+            child: Text(
+              widget.user.filtros[index],
+              style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontWeight:
+                      filtrosSelecionados.contains(widget.user.filtros[index])
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                  fontSize: 13),
+            ),
           ),
         ),
       ),

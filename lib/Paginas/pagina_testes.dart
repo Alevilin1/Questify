@@ -1,12 +1,16 @@
+import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quesfity/Modelos/conquista.dart';
-import 'package:flutter_quesfity/Modelos/user.dart';
+import 'package:flutter_quesfity/Classes/conquista.dart';
+import 'package:flutter_quesfity/Classes/user.dart';
+import 'package:flutter_quesfity/data.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TestePagina extends StatefulWidget {
-  final Usuario user;
-  final List<Conquista> conquistas;
-  const TestePagina({super.key, required this.user, required this.conquistas});
+  final User user;
+  final List<Conquista> listaDeConquistas;
+  const TestePagina(
+      {super.key, required this.user, required this.listaDeConquistas});
 
   @override
   TestePaginaState createState() => TestePaginaState();
@@ -15,6 +19,7 @@ class TestePagina extends StatefulWidget {
 class TestePaginaState extends State<TestePagina> {
   double barraProgresso = 0;
   double xp = 0;
+  final listKey = GlobalKey<AnimatedListState>();
   double progresso = 0;
   bool animar = true;
 
@@ -30,11 +35,180 @@ class TestePaginaState extends State<TestePagina> {
     }
   }
 
+  List<String> testeLista = [
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+    "TESTE",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Column(
+        backgroundColor: Theme.of(context).primaryColor,
+        appBar: AppBar(),
+        body: Row(
+          children: [
+            SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: testeLista.length,
+                itemBuilder: (context, index) {
+                  return cardFiltro(testeLista[index]);
+                },
+              ),
+            )
+          ],
+        ));
+  }
+
+  Padding cardFiltro(filtro) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Container(
+        width: 100,
+        height: 50,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.white,
+        ),
+        child: Center(
+          child: Text(
+            filtro,
+            style: GoogleFonts.poppins(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+          ),
+        ),
+      ),
+    );
+  }
+
+  AnimatedList listaAnimada() {
+    return AnimatedList(
+        key: listKey,
+        shrinkWrap: true,
+        initialItemCount: testeLista.length,
+        itemBuilder: (context, index, animation) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizeTransition(
+              sizeFactor: animation,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    testeLista.removeAt(index);
+                    listKey.currentState!.removeItem(
+                        index,
+                        (context, animation) => SizeTransition(
+                              sizeFactor: animation,
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.black,
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    "TESTE",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ));
+                  });
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black,
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "TESTE",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+
+/*
+Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const Row(
+                children: [Text('Conquistas')],
+              ),
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.listaDeConquistas.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                gradient:
+                                    widget.listaDeConquistas[index].desbloqueado
+                                        ? LinearGradient(colors: gradient)
+                                        : null,
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
+                            width: 75,
+                            height: 75,
+                            child: Icon(
+                              !widget.listaDeConquistas[index].desbloqueado
+                                  ? Icons.lock
+                                  : widget.listaDeConquistas[index].icone,
+                              size: 33,
+                              color:
+                                  widget.listaDeConquistas[index].desbloqueado
+                                      ? Colors.white
+                                      : Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(widget.listaDeConquistas[index].desbloqueado
+                              ? widget.listaDeConquistas[index].nome
+                              : "Bloqueado"),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Container(
+                height: 70,
+                width: 120,
+                decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(40)),
+                child: Center(child: Text("Pessoal")),
+              )
+            ],
+          ),
+        )
+
+Column(
         children: [
           TweenAnimationBuilder(
             tween: Tween<double>(
@@ -108,8 +282,7 @@ class TestePaginaState extends State<TestePagina> {
                   subtitle: Text(conquista.idFuncao),
                 );
               }).toList()),
+
+          )
         ],
-      ),
-    );
-  }
-}
+      ),*/
