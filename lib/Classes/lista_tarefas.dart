@@ -10,7 +10,7 @@ class ListaTarefas extends ChangeNotifier {
   void concluirTarefa(Tarefas tarefa, User user) async {
     tarefa.tarefaConcluida = true;
     user.xp += tarefa.xp;
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 100));
     await tarefa.deletarTarefa(user.id, tarefa);
     listaDeTarefas.remove(tarefa);
 
@@ -38,6 +38,12 @@ class ListaTarefas extends ChangeNotifier {
 
   void adicionarTarefa(Tarefas tarefa) {
     listaDeTarefas.insert(0, tarefa);
+    notifyListeners();
+  }
+
+  void removerTarefa(Tarefas tarefa, User user) async {
+    await tarefa.deletarTarefa(user.id, tarefa);
+    listaDeTarefas.remove(tarefa);
     notifyListeners();
   }
 
